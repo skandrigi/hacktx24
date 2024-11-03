@@ -8,12 +8,12 @@ Mergr integrates conflict detection, resolution, and staged merging into a unifi
 
 ## Features
 
-- **Conflict Detection and Highlighting**: Detects merge conflicts in selected files and highlights them with clear separation between current and incoming changes.
-- **Multiple Resolution Options**: Allows you to resolve conflicts by accepting the current changes, incoming changes, a combination of both, and in the future provides AI-suggested resolutions.
-- **AI-Powered Suggestions (Future)**: Integration with OpenAI provides suggestions based on context, assisting in complex conflict resolution.
-- **Keyboard Binding for Efficiency**: Streamlined keyboard navigation and shortcuts enable rapid conflict resolution.
-- **Visual Conflict Indicators**: A user-friendly, color-coded display that helps users visually track the sections of code in conflict.
-- **Temporary Pop-up Messages**: Briefly displays pop-up notifications to guide or inform you during the resolution process.
+- **✅ Conflict Detection and Highlighting**: Detects merge conflicts in selected files and highlights them with clear separation between current and incoming changes.
+- **⚙️ Multiple Resolution Options**: Allows you to resolve conflicts by accepting the current changes, incoming changes, a combination of both, and in the future provides AI-suggested resolutions.
+- **🤖 AI-Powered Suggestions (Future)**: Integration with OpenAI provides suggestions based on context, assisting in complex conflict resolution.
+- **💻 Keyboard Binding for Efficiency**: Streamlined keyboard navigation and shortcuts enable rapid conflict resolution.
+- **🤩 Visual Conflict Indicators**: A user-friendly, color-coded display that helps users visually track the sections of code in conflict.
+- **🛎️ Temporary Pop-up Messages**: Briefly displays pop-up notifications to guide or inform you during the resolution process.
 
 ---
 
