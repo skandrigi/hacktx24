@@ -57,10 +57,12 @@ class ScreenApp(App):
 
     async def define_commits(self, file_content):
         print("in define_commits")
-        with open(file_content, 'r') as f:
-            completion = await get_completion(f.read())
+        # Use asynchronous file reading
+        async with aiofiles.open(file_content, 'r') as f:
+            content = await f.read()
+            completion = await get_completion(content)
             print(completion)
-            # answers == extract_answer(completion)
+            # answers = extract_answer(completion)
 
 
         comment_view = self.query_one("#comment-view", Static)
