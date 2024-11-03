@@ -30,13 +30,11 @@ class ScreenApp(App):
         self.conflict_detector = ConflictDetector()
         self.staging_manager = StagingManager()
         self.changes = []
+        self.bind("a", lambda: self.action_fix_merge('incoming', self.path), "Resolve Incoming Conflict")
         self.path = "."
         # Optionally, initialize OpenAI client here if needed for AI conflict resolution
         # self.openai_client = OpenAIClient(openai_api_key) if openai_api_key else None
     
-    BINDINGS = [
-        ("a", lambda: self.action_fix_merge('incoming', self.path), "Resolve Incoming Conflict")
-    ]
 
     def compose(self):
         # Define UI components
