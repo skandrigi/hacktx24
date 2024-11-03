@@ -115,7 +115,7 @@ class ScreenApp(App):
         else:
             print("invalid type")
 
-    def on_key(self, event: events.Key) -> None:
+    def on_button_pressed(self, event: Button.Pressed) -> None:
         if len(self.changes) == 0:
             return
         if event == "i":
