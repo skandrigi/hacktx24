@@ -1,8 +1,9 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Static, DirectoryTree
 from textual.containers import Horizontal, Vertical
-from rich.syntax import Syntax
 from rich.traceback import Traceback
+from rich.syntax import Syntax
+from rich.text import Text
 from backend.repository import RepositoryManager
 from backend.conflict import ConflictDetector
 from backend.commit import CommitComparer
@@ -15,7 +16,7 @@ class ScreenApp(App):
         self.conflict_detector = ConflictDetector(self.repo_manager)
         self.commit_comparer = CommitComparer(self.repo_manager)
         self.staging_manager = StagingManager(self.repo_manager)
-
+        
     def compose(self) -> ComposeResult:
         self.widget = Static("<<< MERGR 🍒")
         self.files = DirectoryTree("./", id="file-browser") 
@@ -30,16 +31,17 @@ class ScreenApp(App):
                 with Horizontal():
                     yield self.code
                     yield self.comment
-                yield self.command
+                    
 
     def on_mount(self) -> None:
         # Screen styles
-        self.screen.styles.background = "#000000"
+        self.screen.styles.background = "#28233B"
         self.widget.styles.width = "100%"
         self.widget.styles.height = "auto"  # Adjust height to auto to fit content
         self.widget.styles.margin = 2
         self.widget.styles.text_align = "left"  # Ensure text is centered
 
+        self.files.styles.background = "#28233B"
         self.files.styles.border_left = ("dashed","#1C6FFF")
         self.files.styles.border_right = ("dashed","#1C6FFF")
         self.files.styles.border_top = ("double","#1C6FFF")
@@ -47,42 +49,57 @@ class ScreenApp(App):
         self.files.border_title = "FILES"
         self.files.border_title_align = "left"
         self.files.styles.border_title_color = "white"
-        self.files.styles.height= "72vh"
+        self.files.styles.height= "76vh"
         self.files.styles.width= "17vw"
         self.files.styles.margin = 2
         
+        code_title = Text("", style="white")
+        code_title.append("C", style="white")
+        code_title.append("\U00002B24", style="#FFABAB") 
+        code_title.append("DE", style="white")
+        
+        
+        self.code.styles.background = "#28233B"
         self.code.styles.border_left = ("dashed","#1C6FFF")
         self.code.styles.border_right = ("dashed","#1C6FFF")
         self.code.styles.border_top = ("double","#1C6FFF")
         self.code.styles.border_bottom = ("double","#1C6FFF")
-        self.code.border_title = "CODE"
+        self.code.border_title = code_title
         self.code.border_title_align = "left"
-        self.code.styles.border_title_color = "white"
-        self.code.styles.height= "57vh"
+        self.code.styles.height= "76vh"
         self.code.styles.width= "37vw"
         self.code.styles.margin = 2
+
+        comment_title = Text("C", style="white")
+        comment_title.append("\U00002B24", style="#FFABAB") 
+        comment_title.append("MMENTS", style="white")
+        self.code.styles.overflow = "auto" 
         
         self.comment.styles.border_left = ("dashed","#1C6FFF")
         self.comment.styles.border_right = ("dashed","#1C6FFF")
         self.comment.styles.border_top = ("double","#1C6FFF")
         self.comment.styles.border_bottom = ("double","#1C6FFF")
-        self.comment.border_title = "COMMENTS"
+        self.comment.border_title = comment_title
         self.comment.border_title_align = "left"
         self.comment.styles.border_title_color = "white"
-        self.comment.styles.height= "57vh"
+        self.comment.styles.height= "76vh"
         self.comment.styles.width= "37vw"
         self.comment.styles.margin = 2
+
+        command_title = Text("C", style="white")
+        command_title.append("\U00002B24", style="#FFABAB") 
+        command_title.append("MMAND", style="white")
 
         self.command.styles.border_left = ("dashed","#1C6FFF")
         self.command.styles.border_right = ("dashed","#1C6FFF")
         self.command.styles.border_top = ("double","#1C6FFF")
         self.command.styles.border_bottom = ("double","#1C6FFF")
-        self.command.border_title = "COMMAND"
+        self.command.border_title = command_title 
         self.command.border_title_align = "left"
-        self.command.styles.border_title_color = "white"
         self.command.styles.height= "13vh"
         self.command.styles.width= "75vw"
         self.command.styles.margin = 2
+        self.comment.styles.overflow = "auto" 
 
     def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
         event.stop()

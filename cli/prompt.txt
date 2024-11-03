@@ -1,0 +1,82 @@
+"Q: Given this code with a merge conflict:
+class User:
+    def __init__(self, name):
+        self.name = name
+<<<<<<< HEAD
+        self.last_login = None
+=======
+        self.last_login = datetime.now()
+>>>>>>> feature/tracking
+What would each version do?
+
+A:
+HEAD version: This version initializes a User object with a name and sets last_login to None, indicating no login time is tracked initially.
+
+INCOMING version: This version initializes a User object with a name and immediately sets last_login to the current timestamp when the user is created.
+
+BOTH versions: This would combine both versions, and the current time would override and become last_login.
+
+---
+
+"Q: Given this code with a merge conflict:
+function processPayment(amount) {
+<<<<<<< HEAD
+    console.log("Processing payment...");
+    return api.processPayment(amount);
+=======
+    console.log("Processing payment...");
+    logTransaction(amount);
+    return api.processPayment(amount);
+>>>>>>> feature/logging
+}
+What would each version do?
+
+A:
+HEAD version: This version will log a message and process the payment through the API, with no transaction logging.
+
+INCOMING version: This version will log a message, record the transaction in the system logs, and then process the payment through the API.
+
+BOTH versions: These versions would result in duplicate console.log messages, followed by transaction logging and payment processing, which could cause confusion in the logs.
+
+---
+
+"Q: Given this code with a merge conflict:
+.button {
+<<<<<<< HEAD
+    background-color: #007bff;
+    color: white;
+=======
+    background-color: var(--primary-color);
+    color: var(--text-color);
+>>>>>>> feature/theming
+}
+What would each version do?
+
+A:
+HEAD version: This version styles the button with a fixed blue background color (#007bff) and white text, making it non-customizable.
+
+INCOMING version: This version styles the button using CSS variables for both background and text colors, allowing for dynamic theme changes.
+
+BOTH versions: These versions would cause a logical CSS error as they define the same properties twice, with the latter declarations overriding the former ones.
+
+---
+
+"Q: Given this code with a merge conflict:
+<div class="user-profile">
+<<<<<<< HEAD
+    <img src="avatar.jpg" alt="User Avatar">
+    <h2>{{username}}</h2>
+=======
+    <img src="avatar.jpg" alt="User Avatar" class="rounded-circle">
+    <h2>{{username}}</h2>
+    <span class="badge">{{role}}</span>
+>>>>>>> feature/roles
+</div>
+What would each version do?
+
+A:
+HEAD version: This version displays a basic user profile with a square avatar image and the username.
+
+INCOMING version: This version displays an enhanced user profile with a circular avatar image, the username, and a badge showing the user's role.
+
+BOTH versions: These versions would create two of the same images and headings, which may not be expected structure by having duplicate img and h2 elements, likely a logic error.
