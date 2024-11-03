@@ -29,6 +29,7 @@ class ScreenApp(App):
         self.conflict_detector = ConflictDetector(self.repo_manager)
         self.commit_comparer = CommitComparer(self.repo_manager)
         self.staging_manager = StagingManager(self.repo_manager)
+        self.path = "."
 
     def compose(self) -> ComposeResult:
         self.widget = Static("<<< MERGR 🍒", id="header-widget")
@@ -62,9 +63,9 @@ class ScreenApp(App):
         completion = await get_completion(file_content)
         answers = extract_answer(completion)
 
-
-        comment_view = self.query_one("#comment-view", Static)
-        comment_view.update("".join(answers))
+        if path == self.path:
+            comment_view = self.query_one("#comment-view", Static)
+            comment_view.update("".join(answers))
 
     async def on_directory_tree_file_selected(
         self, event: DirectoryTree.FileSelected
@@ -72,6 +73,7 @@ class ScreenApp(App):
         """Handle the event when a file is selected in the directory tree."""
         event.stop()
         file_path = str(event.path)
+        self.path = file_path
         
         # Do the quick file reading first
         with open(file_path, "r") as file:

@@ -5,16 +5,17 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+  "aiofiles>=24.1.0",
   "datasets>=3.1.0",
   "gitpython>=3.1.43",
   "openai>=1.53.0",
   "textual-dev>=1.6.1",
   "textual>=0.85.2",
 ]
-
-[project.scripts]
-mergr = "cli.main:main"
-
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+#
+# [project.scripts]
+# mergr = "cli.main:main"
+#
+# [build-system]
+# requires = ["setuptools"]
+# build-backend = "setuptools.build_meta"
