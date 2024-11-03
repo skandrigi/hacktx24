@@ -15,6 +15,8 @@ from textual.app import App, ComposeResult
 from textual.widgets import Static, DirectoryTree, Button, TextArea, Pretty
 from textual.containers import Horizontal, Vertical, ScrollableContainer
 from rich.text import Text
+from rich.style import Style
+from textual.widgets.text_area import TextAreaTheme
 from backend.repository import RepositoryManager
 from backend.conflict import ConflictDetector
 from backend.commit import CommitComparer
@@ -38,7 +40,19 @@ class ScreenApp(App):
     def compose(self) -> ComposeResult:
         self.widget = Static("<<< MERGR 🍒", id="header-widget")
         self.files = DirectoryTree("./", id="file-browser", classes="grid")
-        self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view", classes="grid")
+        self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view", classes="grid", theme="dracula")
+        my_theme = TextAreaTheme.get_builtin_theme("dracula")
+        my_theme = TextAreaTheme(
+            name="pacs",
+            base_style=Style(bgcolor="#28233B"),
+            cursor_style=Style(color="white", bgcolor="blue"),
+            syntax_styles={
+                "string": Style(color="red"),
+                "comment": Style(color="magenta"),
+            }
+        )
+        self.code.register_theme(my_theme)
+        self.code.theme = "pacs"
         self.comment = Static("", id="comment-view", classes="grid")
         self.command = Static("", id="command-view", classes="grid")
         self.popup = Static("This is a temporary pop-up!", id="popup", classes="popup")
@@ -48,6 +62,7 @@ class ScreenApp(App):
         yield ScrollableContainer((self.code))
         yield self.comment
         yield self.popup
+        self.comment.update("Merge completed successfully.")
 
         # with Horizontal(id="button-container"):
         #     yield Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button")
@@ -79,6 +94,19 @@ class ScreenApp(App):
         comment_title.append("MMENTS", style="white")
         self.comment.border_title = comment_title
         self.comment.border_title_align = "left"
+        
+        self.show_temp_popup("🍓 Merge conflict resolved!")
+
+    async def on_key(self, event: events.Key) -> None:
+        line = self.conflict_detector.get_conflict_lines(self, self.path)
+
+        if event.key == "a":
+            self.staging_manager.accept_incoming(self, self.path)
+        elif event.key == "c":
+            self.staging_manager.accept_current(self, self.path)
+        elif event.key == "b":
+            self.staging_manager.keep_both(self, self.path)
+            
 
     async def on_key(self, event: events.Key) -> None:
         line = self.conflict_detector.get_conflict_lines(self, self.path)
@@ -174,6 +202,30 @@ class ScreenApp(App):
         self.staging_manager.stage_file(file_path)
         self.comment_content.update(f"{file_path} staged with {choice} resolution.")
 
+    def show_temp_popup(self, message):
+        """Display a temporary popup with a message."""
+        popup = self.query_one("#popup", Static)
+        popup.update(message)
+        popup.styles.display = "block" 
+        self.set_timer(2, lambda: self.hide_temp_popup())
+
+    def hide_temp_popup(self):
+        """Hide the temporary popup."""
+        popup = self.query_one("#popup", Static)
+        popup.styles.display = "none"
+
+    def show_temp_popup(self, message):
+        """Display a temporary popup with a message."""
+        popup = self.query_one("#popup", Static)
+        popup.update(message)
+        popup.styles.display = "block" 
+        self.set_timer(2, lambda: self.hide_temp_popup())
+
+    def hide_temp_popup(self):
+        """Hide the temporary popup."""
+        popup = self.query_one("#popup", Static)
+        popup.styles.display = "none"
+
     def finalize_merge(self):
         """Finalize the merge process if all conflicts are resolved."""
         if not self.repo_manager.get_files_status():
@@ -184,7 +236,8 @@ class ScreenApp(App):
             self.comment_content.update(
                 "Some conflicts are still unresolved. Resolve all conflicts to complete the merge."
             )
-
+    
+    
 
 if __name__ == "__main__":
     repo_path = "./test_repo"  # Specify path to your repository

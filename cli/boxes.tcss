@@ -2,8 +2,9 @@ Screen {
     layout: grid;
     grid-size: 3 3;
     grid-rows: 1fr 10fr 2fr;
-    grid-columns: 3fr 5fr 5fr;
+    grid-columns: 2fr 5fr 5fr;
     background: #2B263B;
+    layers: below above;
 }
 
 #header-widget {
@@ -46,11 +47,13 @@ LoadingIndicator {
 }
 
 .popup {
-    display: none; /* Hide by default */
-    background: #3E3855; /* Semi-transparent background */
-    padding: 1; /* Padding for spacing */
-    margin-bottom: 1; /* Space between the pop-up and other elements */
+    layer: above;
+    display: none;
+    background: rgba(62, 56, 85, 0.3);
+    padding: 1;
+    margin-bottom: 1;
     color: white; 
+    dock: top;
 }
 
 .popup.visible {
