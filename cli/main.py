@@ -86,7 +86,7 @@ class ScreenApp(App):
                     for i, section in enumerate(conflict_sections)
                 )
 
-                # asyncio.create_task(self.define_commits(content))
+                asyncio.create_task(self.define_commits(content))
 
                 comment_view.update(conflict_text)
 
