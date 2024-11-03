@@ -5,6 +5,7 @@ from rich.traceback import Traceback
 from rich.syntax import Syntax
 from rich.text import Text
 
+
 class ScreenApp(App):
     
     def compose(self) -> ComposeResult:
@@ -21,6 +22,7 @@ class ScreenApp(App):
                 with Horizontal():
                     yield self.code
                     yield self.comment
+                    
 
     def on_mount(self) -> None:
         # Screen styles
