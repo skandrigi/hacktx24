@@ -10,7 +10,6 @@ class FileInfo(BaseModel):
 
 @app.post("/handle_file_info")
 async def handle_file_info(file_info: FileInfo):
-    # Access repoPath and filePath from the client request
     repo_path = file_info.repoPath
     file_path = file_info.filePath
 
