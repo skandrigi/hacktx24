@@ -1,0 +1,6 @@
+# Project Documentation
+<<<<<<< main
+Welcome to Mergr! This project is designed to make resolving merge conflicts easier and faster.
+=======
+Welcome to the Mergr! This project is designed to simplify resolving merge conflicts.
+>>>>>>> feature
