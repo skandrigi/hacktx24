@@ -104,6 +104,11 @@ class ScreenApp(App):
         if type in ("current", "incoming", "both"):
             self.staging_manager.resolve_and_save(type, self.path)
             self.changes = self.changes[1:]
+            with open(self.path, "r") as file: content = file.read()
+
+            code_view = self.query_one("#code-view")
+            code_view.text = content
+
             if(len(self.changes) == 0):
                 resolved_popup = Text("", style="white")
                 resolved_popup.append("🍊 Merge conflict ", style="white")
@@ -111,6 +116,28 @@ class ScreenApp(App):
                 self.show_temp_popup(resolved_popup)
         else:
             print("invalid type")
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if len(self.changes) == 0:
+            return
+        if event.button.id == "resolve-button":
+            self.staging_manager.resolve_and_save("incoming", self.path)
+            self.changes = self.changes[1:]
+        elif event.button.id == "acceptcurr-button":
+            self.staging_manager.resolve_and_save("current", self.path)
+            self.changes = self.changes[1:]
+        elif event.button.id == "acceptboth-button":
+            self.staging_manager.resolve_and_save("both", self.path)
+            self.changes = self.changes[1:]
+        with open(self.path, "r") as file:
+                content = file.read()
+        code_view = self.query_one("#code-view")
+        code_view.text = content
+        if(len(self.changes) == 0):
+            resolved_popup = Text("", style="white")
+            resolved_popup.append("🍊 Merge conflict ", style="white")
+            resolved_popup.append("resolved!", style="#A6E1E5")
+            self.show_temp_popup(resolved_popup)
 
     async def define_commits(self, file_content, path):
         """Retrieve and display commit information asynchronously."""
