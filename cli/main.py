@@ -67,7 +67,7 @@ class ScreenApp(App):
 
 
         comment_view = self.query_one("#comment-view", Static)
-        if file_content == self.query_one(DirectoryTree.path):
+        if file_content == self.query_one(DirectoryTree).path:
             comment_view.update("hello")
 
     async def on_directory_tree_file_selected(
@@ -87,7 +87,7 @@ class ScreenApp(App):
         code_view.update(syntax)
         comment_view = self.query_one("#comment-view", Static)
         # Run define_commits asynchronously to avoid blocking
-        asyncio.create_task(self.define_commits(event.path))
+        # asyncio.create_task(self.define_commits(event.path))
         try:
             # Check for conflict markers and display conflicts
             if "<<<<<<<" in content and "=======" in content and ">>>>>>>" in content:
