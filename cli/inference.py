@@ -1,5 +1,5 @@
 import asyncio
-import openai
+from openai import AsyncOpenAI
 import re
 
 
@@ -44,7 +44,8 @@ async def get_completion(git_conflict):
 
     with open("prompt.txt", "r") as f:
         text = f.read()
-        completion = await openai.ChatCompletion.acreate(
+        client = AsyncOpenAI()
+        completion = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {

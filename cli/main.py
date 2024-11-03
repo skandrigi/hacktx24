@@ -59,16 +59,13 @@ class ScreenApp(App):
     async def define_commits(self, file_content):
         print("in define_commits")
         # Use asynchronous file reading
-        async with aiofiles.open(file_content, 'r') as f:
-            content = await f.read()
-            completion = await get_completion(content)
-            print(completion)
-            # answers = extract_answer(completion)
+        completion = await get_completion(file_content)
+        answers = extract_answer(completion)
 
 
         comment_view = self.query_one("#comment-view", Static)
         if file_content == self.query_one(DirectoryTree).path:
-            comment_view.update("hello")
+            comment_view.update(answers)
 
     async def on_directory_tree_file_selected(
         self, event: DirectoryTree.FileSelected
@@ -87,7 +84,6 @@ class ScreenApp(App):
         code_view.update(syntax)
         comment_view = self.query_one("#comment-view", Static)
         # Run define_commits asynchronously to avoid blocking
-        asyncio.create_task(self.define_commits(event.path))
         try:
             # Check for conflict markers and display conflicts
             if "<<<<<<<" in content and "=======" in content and ">>>>>>>" in content:
@@ -111,6 +107,7 @@ class ScreenApp(App):
                     "Choose [c] to accept Current changes or [i] for Incoming changes.\n"
                 )
                 comment_view.update(resolution_instruction)
+                asyncio.create_task(self.define_commits(content))
 
             else:
                 # If no conflict markers are detected, display file content normally
