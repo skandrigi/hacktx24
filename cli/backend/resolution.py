@@ -34,7 +34,7 @@ class StagingManager:
         Resolve only the first conflict based on user choice and save the file.
         
         Args:
-            choice (str): The resolution choice ('incoming', 'current', or 'both')
+            choice (str): The resolution choice. If 'incoming', use incoming changes; if 'current', use current changes; otherwise, uses both changes.
             filename (str): Path to the file being resolved
         """
         if not self.found_first:
@@ -48,10 +48,8 @@ class StagingManager:
             resolved = self.first_conflict["incoming"]
         elif choice == "current":
             resolved = self.first_conflict["current"]
-        elif choice == "both":
-            resolved = self.first_conflict["current"] + ["# Incoming Changes\n"] + self.first_conflict["incoming"]
         else:
-            raise ValueError("Invalid choice. Must be 'incoming', 'current', or 'both'")
+            resolved = self.first_conflict["current"] + self.first_conflict["incoming"]
 
         # Replace the conflict with resolved content
         self.content[self.first_conflict['start_index']:self.first_conflict['end_index'] + 1] = resolved
