@@ -14,8 +14,8 @@ from textual.widget import Widget
 from textual.app import App, ComposeResult
 from textual.widgets import Static, DirectoryTree, Button, TextArea
 from textual.containers import Horizontal, Vertical, ScrollableContainer
-from rich.text import Text
 from rich.style import Style
+from textual.widgets.text_area import TextAreaTheme
 
 from backend.merge_conflict_manager import MergeConflictManager
 from backend.conflict import ConflictDetector
@@ -77,18 +77,17 @@ class ScreenApp(App):
         # Define UI components
         self.widget = Static("<<< MERGR 🍒", id="header-widget")
         self.files = DirectoryTree("./", id="file-browser", classes="grid")
-        self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view", classes="grid")
-        self.comment = Static("", id="comment-view", classes="grid")
-        self.popup = Static("This is a temporary pop-up!", id="popup", classes="popup")
-
-        # Customize theme if desired
-        custom_theme = TextAreaTheme(
-            name="custom",
+        self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view", classes="grid", theme="dracula")
+        dracula = TextAreaTheme.get_builtin_theme("dracula")
+        my_theme = TextAreaTheme(
+            name="pacs",
             base_style=Style(bgcolor="#28233B"),
             cursor_style=Style(color="white", bgcolor="blue"),
             syntax_styles={
-                "string": Style(color="red"),
-                "comment": Style(color="magenta"),
+                **dracula.syntax_styles,
+                "string": Style(color="#FFABAB"),
+                "comment": Style(color="#FFD153"),
+                "function": Style(color="#FFD153")
             }
         )
         self.code.register_theme(custom_theme)
