@@ -58,7 +58,8 @@ class ScreenApp(App):
         self.code.styles.margin = 2
 
         comment_title = Text("C", style="white")
-        comment_title.append("\U000025CF", style="FFABAB") 
+        comment_title.append("\U00002B24", style="FFABAB") 
+        comment_title.append("\U000025CE", style="FFABAB") 
         comment_title.append("MMENTS", style="white")
         self.code.styles.overflow = "auto" 
         
