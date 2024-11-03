@@ -9,7 +9,6 @@ class ScreenApp(App):
         self.files = DirectoryTree("./", id="file-browser") 
         self.code = Static("", id="code-view")
         self.comment = Static("")
-        self.command = Static("")
 
         yield self.widget
         with Horizontal():
@@ -18,7 +17,6 @@ class ScreenApp(App):
                 with Horizontal():
                     yield self.code
                     yield self.comment
-                yield self.command
 
     def on_mount(self) -> None:
         # Screen styles
@@ -45,7 +43,7 @@ class ScreenApp(App):
         self.code.border_title = "CODE"
         self.code.border_title_align = "left"
         self.code.styles.border_title_color = "white"
-        self.code.styles.height= "57vh"
+        self.code.styles.height= "72vh"
         self.code.styles.width= "37vw"
         self.code.styles.margin = 2
         
@@ -56,20 +54,9 @@ class ScreenApp(App):
         self.comment.border_title = "COMMENTS"
         self.comment.border_title_align = "left"
         self.comment.styles.border_title_color = "white"
-        self.comment.styles.height= "57vh"
+        self.comment.styles.height= "72vh"
         self.comment.styles.width= "37vw"
         self.comment.styles.margin = 2
-
-        self.command.styles.border_left = ("dashed","#1C6FFF")
-        self.command.styles.border_right = ("dashed","#1C6FFF")
-        self.command.styles.border_top = ("double","#1C6FFF")
-        self.command.styles.border_bottom = ("double","#1C6FFF")
-        self.command.border_title = "COMMAND"
-        self.command.border_title_align = "left"
-        self.command.styles.border_title_color = "white"
-        self.command.styles.height= "13vh"
-        self.command.styles.width= "75vw"
-        self.command.styles.margin = 2
 
     def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
         event.stop()
