@@ -5,6 +5,7 @@ try:
 except ImportError:
     raise ImportError("Please install httpx with 'uv add httpx' ")
 
+import aiofiles
 from inference import extract_answer, get_completion
 
 from textual.app import App, ComposeResult
