@@ -1,13 +1,20 @@
 [project]
-name = "cli"
+name = "mergr"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "datasets>=3.1.0",
-    "gitpython>=3.1.43",
-    "openai>=1.53.0",
-    "textual-dev>=1.6.1",
-    "textual>=0.85.2",
+  "datasets>=3.1.0",
+  "gitpython>=3.1.43",
+  "openai>=1.53.0",
+  "textual-dev>=1.6.1",
+  "textual>=0.85.2",
 ]
+
+[project.scripts]
+mergr = "src.main:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
