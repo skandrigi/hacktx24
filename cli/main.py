@@ -8,11 +8,11 @@ except ImportError:
 
 import aiofiles
 from inference import extract_answer, get_completion
-
+from collections import deque
 from textual.reactive import reactive
 from textual.widget import Widget
 from textual.app import App, ComposeResult
-from textual.widgets import Static, DirectoryTree, Button, TextArea
+from textual.widgets import Static, DirectoryTree, Button, TextArea, Selection
 from textual.containers import Horizontal, Vertical, ScrollableContainer
 from rich.style import Style
 from rich.text import Text
@@ -27,6 +27,7 @@ INITIAL_TEXT = 'Print("Hello World!")'
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
     comment_content = reactive("This is the initial content")
+    merge_queue = reactive(deque(list(ConflictDetector.conflict_manager.parse_conflict_sections())))
 
     def __init__(self, openai_api_key=None):
         # Backend initialization
@@ -36,7 +37,7 @@ class ScreenApp(App):
         self.staging_manager = StagingManager()
         # Optionally, initialize OpenAI client here if needed for AI conflict resolution
         # self.openai_client = OpenAIClient(openai_api_key) if openai_api_key else None
-
+    
     def handle_conflicts(self):
         """Load conflict files, detect conflicts, and guide user through resolution."""
         conflict_files = self.conflict_manager.load_conflict_files()
@@ -124,14 +125,27 @@ class ScreenApp(App):
         self.comment.border_title = comment_title
         self.comment.border_title_align = "left"
 
-    async def on_key(self, event: events.Key) -> None:
+    async def on_key(self, merge_queue, event: events.Key) -> None:
         """Handle keyboard input for conflict resolution actions."""
-        if event.key == "a":
-            self.staging_manager.accept_incoming(self.path)
-        elif event.key == "c":
-            self.staging_manager.accept_current(self.path)
-        elif event.key == "b":
-            self.staging_manager.keep_both(self.path)
+        if merge_queue:
+            if event.key == "a":
+                merge_queue.popleft()
+                next_conflict = merge_queue[0]
+                self.code.text_area.cursor_location = (next_conflict[0],0)
+                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
+                self.staging_manager.accept_incoming(self.path)
+            elif event.key == "c":
+                merge_queue.popleft()
+                next_conflict = merge_queue[0]
+                self.code.text_area.cursor_location = (next_conflict[0],0)
+                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
+                self.staging_manager.accept_current(self.path)
+            elif event.key == "b":
+                merge_queue.popleft()
+                next_conflict = merge_queue[0]
+                self.code.text_area.cursor_location = (next_conflict[0],0)
+                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
+                self.staging_manager.keep_both(self.path)
 
     async def define_commits(self, file_content, path):
         """Retrieve and display commit information asynchronously."""
