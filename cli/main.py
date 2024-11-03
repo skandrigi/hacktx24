@@ -43,7 +43,7 @@ class ScreenApp(App):
     
     def compose(self):
         # Define UI components
-        self.widget = Static("<<< MERGR 🍒", id="header-widget")
+        self.widget = Static("<<< MERGE 🍒", id="header-widget")
         self.files = DirectoryTree("./", id="file-browser", classes="grid")
         self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view", classes="grid", theme="dracula")
         dracula = TextAreaTheme.get_builtin_theme("dracula")
