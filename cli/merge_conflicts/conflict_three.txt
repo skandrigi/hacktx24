@@ -1,7 +1,32 @@
-{
-    "version": "<<<<<<< main\n1.0\n=======\n1.1\n>>>>>>> feature",
-    "logging": {
-        "level": "<<<<<<< main\ninfo\n=======\ndebug\n>>>>>>> feature",
-        "output": "<<<<<<< main\nfile\n=======\nconsole\n>>>>>>> feature"
-    }
-}
+def add(a, b):
+    """Add two numbers."""
+<<<<<<< main
+    return a + b
+=======
+    result = a + b
+    print("The sum is:", result)
+    return result
+>>>>>>> feature
+
+def subtract(a, b):
+    """Subtract two numbers."""
+<<<<<<< main
+    return a - b
+=======
+    print("Subtracting values...")
+    return a - b
+>>>>>>> feature
+
+def multiply(a, b):
+    """Multiply two numbers."""
+    return a * b
+
+<<<<<<< main
+# No division function in main branch
+=======
+def divide(a, b):
+    """Divide two numbers."""
+    if b == 0:
+        raise ValueError("Cannot divide by zero.")
+    return a / b
+>>>>>>> feature
