@@ -51,7 +51,7 @@ LoadingIndicator {
 .popup {
     layer: above;
     display: none;
-    background: rgba(62, 56, 85, 0.3);
+    background: #3E3855;
     padding: 1;
     margin-bottom: 1;
     color: white; 

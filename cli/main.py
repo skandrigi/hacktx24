@@ -82,7 +82,7 @@ class ScreenApp(App):
         files_title.append("FILES", style="white")
         self.files.border_title = files_title
         self.files.border_title_align = "left"
-
+        
         code_title = Text("", style="white")
         code_title.append("C", style="white")
         code_title.append("\U00002b24", style="#FFABAB")
@@ -104,37 +104,13 @@ class ScreenApp(App):
         if type in ("current", "incoming", "both"):
             self.staging_manager.resolve_and_save(type, self.path)
             self.changes = self.changes[1:]
-
-            with open(self.path, "r") as file:
-                content = file.read()
-
-            code_view = self.query_one("#code-view")
-            code_view.text = content
             if(len(self.changes) == 0):
-                print("alert!")
+                resolved_popup = Text("", style="white")
+                resolved_popup.append("🍊 Merge conflict ", style="white")
+                resolved_popup.append("resolved!", style="#A6E1E5")
+                self.show_temp_popup(resolved_popup)
         else:
             print("invalid type")
-
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        if len(self.changes) == 0:
-            return
-        if event.button.id == "resolve-button":
-            self.staging_manager.resolve_and_save("incoming", self.path)
-            self.changes = self.changes[1:]
-        elif event.button.id == "acceptcurr-button":
-            self.staging_manager.resolve_and_save("current", self.path)
-            self.changes = self.changes[1:]
-        elif event.button.id == "acceptboth-button":
-            self.staging_manager.resolve_and_save("both", self.path)
-            self.changes = self.changes[1:]
-        with open(self.path, "r") as file:
-                content = file.read()
-
-        code_view = self.query_one("#code-view")
-        code_view.text = content
-        if(len(self.changes) == 0):
-            print("alert!")
-        
 
     async def define_commits(self, file_content, path):
         """Retrieve and display commit information asynchronously."""
@@ -184,12 +160,14 @@ class ScreenApp(App):
         popup = self.query_one("#popup", Static)
         popup.update(message)
         popup.styles.display = "block" 
-        self.set_timer(2, lambda: self.hide_temp_popup())
+        self.set_timer(1, lambda: self.hide_temp_popup())
 
     def hide_temp_popup(self):
         """Hide the temporary popup."""
         popup = self.query_one("#popup", Static)
-        popup.styles.display = "none"
+        popup.styles.animate("opacity", value=0.0, duration=2.0)
+        self.set_timer(1.7, lambda: setattr(popup.styles, "display", "none"))
+        
 
 if __name__ == "__main__":
     app = ScreenApp(openai_api_key="your_openai_api_key_here")
