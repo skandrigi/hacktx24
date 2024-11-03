@@ -1,15 +1,10 @@
 import asyncio
-
-try:
-    import httpx
-except ImportError:
-    raise ImportError("Please install httpx with 'uv add httpx' ")
-
-import aiofiles
 from inference import extract_answer, get_completion
 
+from textual.reactive import reactive
+from textual.widget import Widget
 from textual.app import App, ComposeResult
-from textual.widgets import Static, DirectoryTree, Button, TextArea
+from textual.widgets import Static, DirectoryTree, Button, TextArea, Pretty
 from textual.containers import Horizontal, Vertical, ScrollableContainer
 from rich.text import Text
 from backend.repository import RepositoryManager
@@ -22,6 +17,8 @@ INITIAL_TEXT = 'Print("Hello World!")'
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
     position: int = 0
+    comment_content = reactive("No merge conflicts yet... (unicode thing here)")
+
     def __init__(self, repo_path="./test_repo"):
         super().__init__()
         self.repo_manager = RepositoryManager(repo_path)
@@ -49,6 +46,9 @@ class ScreenApp(App):
         #     yield Button("🍊 Accept Current", id="acceptcurr-button", classes="action-button")
         #     yield Button("🍓 Accept Both", id="acceptboth-button", classes="action-button")
         #     yield Button("🤖 Accept AI", id="ai-button", classes="action-button")
+    def watch_comment_content(self, old_comment: str, new_comment: str) -> None:  
+        print("Hello")
+        self.comment.update(new_comment)
 
     def on_mount(self) -> None:
         # Set up initial view titles and styles
@@ -79,8 +79,7 @@ class ScreenApp(App):
         answers = extract_answer(completion)
 
         if path == self.path:
-            comment_view = self.query_one("#comment-view", Static)
-            comment_view.update("".join(answers))
+            self.comment_content = "".join(answers)
 
     async def on_directory_tree_file_selected(
         self, event: DirectoryTree.FileSelected
@@ -97,7 +96,6 @@ class ScreenApp(App):
         # Update UI immediately with file content
         code_view = self.query_one("#code-view")
         code_view.text = content
-        comment_view = self.query_one("#comment-view", Static)
         # Run define_commits asynchronously to avoid blocking
         try:
             # Check for conflict markers and display conflicts
@@ -110,8 +108,8 @@ class ScreenApp(App):
                     for i, section in enumerate(conflict_sections)
                 )
 
-                comment_view.update(conflict_text)
 
+                self.comment_content = conflict_text
 
                 # Display raw file content with conflict markers in the code view
                 code_view.text = content
@@ -120,18 +118,20 @@ class ScreenApp(App):
                 resolution_instruction = Text(
                     "Choose [c] to accept Current changes or [i] for Incoming changes.\n"
                 )
-                comment_view.update(resolution_instruction)
+
+
+                self.comment_content = resolution_instruction
                 asyncio.create_task(self.define_commits(content, file_path))
 
             else:
                 # If no conflict markers are detected, display file content normally
                 code_view.text = content
-                comment_view.update("No conflicts detected in this file.")
+                self.comment_content = "No conflicts detected in this file."
 
         except Exception as e:
             # Handle errors in file loading
             code_view.text = "print('uh-oh')"
-            comment_view.update(f"Error loading file: {e}")
+            self.comment_content = f"Error loading file: {e}"
 
     def resolve_conflict(self, file_path, choice="incoming"):
         """Resolve conflicts in the selected file based on user choice."""
@@ -153,16 +153,16 @@ class ScreenApp(App):
 
         # Stage the resolved file for commit
         self.staging_manager.stage_file(file_path)
-        self.comment.update(f"{file_path} staged with {choice} resolution.")
+        self.comment_content.update(f"{file_path} staged with {choice} resolution.")
 
     def finalize_merge(self):
         """Finalize the merge process if all conflicts are resolved."""
         if not self.repo_manager.get_files_status():
             self.staging_manager.continue_merge()
-            self.comment.update("Merge completed successfully.")
+            self.comment_content.update("Merge completed successfully.")
             self.show_temp_popup("Conflicts detected!")
         else:
-            self.comment.update(
+            self.comment_content.update(
                 "Some conflicts are still unresolved. Resolve all conflicts to complete the merge."
             )
 

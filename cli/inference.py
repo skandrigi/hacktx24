@@ -37,11 +37,6 @@ async def get_completion(git_conflict):
         r"<<<<<<< HEAD(.*?)=======(.*?)>>>>>>> .*?$", git_conflict, re.DOTALL
     )
 
-    for index, (current_branch, incoming_branch) in enumerate(conflicts):
-        print(
-            f"Conflict {index + 1}:\nCurrent Branch:\n{current_branch.strip()}\nIncoming Branch:\n{incoming_branch.strip()}\n"
-        )
-
     with open("prompt.txt", "r") as f:
         text = f.read()
         client = AsyncOpenAI()
