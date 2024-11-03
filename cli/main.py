@@ -21,9 +21,6 @@ INITIAL_TEXT = 'Print("Hello World!")'
 
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
-    BINDINGS = [
-        ("a", "fix_merge('incoming',self.path)", "Resolve Incoming Conflict")
-    ]
     comment_content = reactive("This is the initial content")
 # 
     def __init__(self, openai_api_key=None):
@@ -37,43 +34,9 @@ class ScreenApp(App):
         # Optionally, initialize OpenAI client here if needed for AI conflict resolution
         # self.openai_client = OpenAIClient(openai_api_key) if openai_api_key else None
     
-    def handle_conflicts(self):
-        """Load conflict files, detect conflicts, and guide user through resolution."""
-        conflict_files = self.conflict_manager.load_conflict_files()
-
-        for filename, lines in conflict_files.items():
-            print(f"\nHandling conflicts in {filename}")
-            conflicts = self.conflict_detector.parse_conflict_sections(lines)
-
-            for conflict in conflicts:
-                current = "".join(conflict["current"])
-                incoming = "".join(conflict["incoming"])
-
-                print("\nCurrent changes:\n", current)
-                print("\nIncoming changes:\n", incoming)
-
-                # Optional: Use AI suggestion if OpenAI client is initialized
-                # suggestion = self.openai_client.get_suggestion(current, incoming) if self.openai_client else None
-                # if suggestion:
-                #     print("\nAI Suggested resolution:\n", suggestion)
-                suggestion = "hello"
-
-                # User choice
-                choice = input("Choose resolution ([c] Current, [i] Incoming, [a] AI Suggested, [b] Both): ")
-                if choice == "c":
-                    self.staging_manager.resolve_conflict(conflict, "current")
-                elif choice == "i":
-                    self.staging_manager.resolve_conflict(conflict, "incoming")
-                elif choice == "a" and suggestion:
-                    self.staging_manager.resolve_conflict(conflict, suggestion)
-                elif choice == "b":
-                    self.staging_manager.resolve_conflict(conflict, "both")
-                else:
-                    print("Invalid choice, defaulting to Incoming")
-                    self.staging_manager.resolve_conflict(conflict, "incoming")
-
-            # Save resolved content for each file
-            self.staging_manager.save_resolved_content(filename)
+    BINDINGS = [
+        ("a", f"fix_merge('incoming',{path})", "Resolve Incoming Conflict")
+    ]
 
     def compose(self):
         # Define UI components
