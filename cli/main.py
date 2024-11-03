@@ -90,8 +90,8 @@ class ScreenApp(App):
                 "function": Style(color="#FFD153")
             }
         )
-        self.code.register_theme(custom_theme)
-        self.code.theme = "custom"
+        self.code.register_theme(my_theme)
+        self.code.theme = "pacs"
 
         yield self.widget
         yield self.files
