@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Static, DirectoryTree
+from textual.widgets import Static, DirectoryTree, Button
 from textual.containers import Horizontal, Vertical
 from rich.traceback import Traceback
 from rich.syntax import Syntax
@@ -24,6 +24,11 @@ class ScreenApp(App):
         yield self.files
         yield self.code
         yield self.comment
+
+        with Horizontal(id="button-container"):
+            yield Button("Commit", id="commit-button", classes="action-button")
+            yield Button("Stage", id="stage-button", classes="action-button")
+            yield Button("Resolve", id="resolve-button", classes="action-button")
 
     def on_mount(self) -> None:
         # Only custom title text or unique logic remains here.
