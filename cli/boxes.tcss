@@ -22,6 +22,10 @@ Screen {
     border: solid #1c6fff;
 }
 
+.grid:focus {
+    border: solid red;
+}
+
 LoadingIndicator {
     height: 1;
     dock: bottom;
