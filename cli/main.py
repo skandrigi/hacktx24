@@ -118,13 +118,13 @@ class ScreenApp(App):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if len(self.changes) == 0:
             return
-        if event == "i":
+        if event.id == "resolve-button":
             self.staging_manager.resolve_and_save("incoming", self.path)
             self.changes = self.changes[1:]
-        elif event == "c":
+        elif event.id == "acceptcurr-button":
             self.staging_manager.resolve_and_save("current", self.path)
             self.changes = self.changes[1:]
-        elif event == "b":
+        elif event.id == "acceptboth-button":
             self.staging_manager.resolve_and_save("both", self.path)
             self.changes = self.changes[1:]
         
