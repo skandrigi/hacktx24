@@ -86,9 +86,9 @@ class ScreenApp(App):
                     for i, section in enumerate(conflict_sections)
                 )
 
-                asyncio.create_task(self.define_commits(content))
-
                 comment_view.update(conflict_text)
+
+                asyncio.create_task(self.define_commits(content))
 
                 # Display raw file content with conflict markers in the code view
                 syntax = Syntax(content, "text", line_numbers=True, theme="github-dark")
