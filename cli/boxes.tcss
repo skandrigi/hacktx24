@@ -35,6 +35,8 @@ LoadingIndicator {
 
 .action-button {
     background: #28233B; 
+    margin-left: 1;
+    margin-right: 1;
 }
 
 .action-button:hover {
@@ -64,9 +66,4 @@ LoadingIndicator {
     width: 100%; 
     align: center middle;
     column-span: 2;
-}
-
-.action-button {
-    margin-left: 1;
-    margin-right: 1;
 }
