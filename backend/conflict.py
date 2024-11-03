@@ -1,19 +1,26 @@
-import re
-
 class ConflictDetector:
     def __init__(self, repo_manager):
         self.repo_manager = repo_manager
 
     def detect_conflicts(self):
-        """Detect files with merge conflicts in the repository."""
+        """Detect files with conflict markers."""
         conflicts = []
         for file_path, status in self.repo_manager.get_files_status().items():
-            if status == "U":  # Git uses 'U' to denote unresolved conflicts
+            if status == "U" or self.has_conflict_markers(file_path):  # Check Git status or markers
                 conflicts.append(file_path)
         return conflicts
 
+    def has_conflict_markers(self, file_path):
+        """Check if a file contains conflict markers."""
+        try:
+            with open(file_path, 'r') as file:
+                content = file.read()
+                return all(marker in content for marker in ["<<<<<<<", "=======", ">>>>>>>"])
+        except FileNotFoundError:
+            return False
+
     def get_conflict_lines(self, file_path):
-        """Identify lines with conflicts in a specific file."""
+        """Identify lines with conflict markers in a specific file."""
         with open(file_path, 'r') as f:
             lines = f.readlines()
         conflict_markers = {"start": [], "divider": [], "end": []}
