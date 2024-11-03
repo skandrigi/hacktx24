@@ -1,0 +1,9 @@
+# mock_conflict.txt
+
+This is some initial content.
+<<<<<<< HEAD
+This is a change from the main branch.
+=======
+This is a conflicting change from the feature branch.
+>>>>>>> feature-branch
+Some more content at the end.
