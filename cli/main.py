@@ -158,6 +158,7 @@ class ScreenApp(App):
     def show_temp_popup(self, message):
         """Display a temporary popup with a message."""
         popup = self.query_one("#popup", Static)
+        popup.styles.opacity = 1.0
         popup.update(message)
         popup.styles.display = "block" 
         self.set_timer(1, lambda: self.hide_temp_popup())
