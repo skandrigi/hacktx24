@@ -58,5 +58,8 @@ class StagingManager:
             # Save the entire file with the resolved first conflict
             with open(filename, "w") as f:
                 f.writelines(self.content)
+            self.content = []
+            self.first_conflict = {'current': [], 'incoming': []}
+            self.found_first = False
         except IOError as e:
             raise IOError(f"Error writing to file {filename}: {str(e)}")
