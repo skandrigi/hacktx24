@@ -48,7 +48,6 @@ class ConflictDetector:
         curr = 0
 
         for i,line in enumerate(file_lines.split('\n')):
-            print(line)
 
             if line.startswith("<<<<<<<"):
                 in_conflict = True

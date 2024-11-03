@@ -147,7 +147,7 @@ class ScreenApp(App):
         completion = await get_completion(file_content)
         answers = extract_answer(completion)
         if path == self.path:
-            self.comment_content = "\n".join(answers)
+            self.comment_content += "\n\n" + "\n\n".join(answers)
 
     def watch_comment_content(self, old_comment: str, new_comment: str) -> None:  
         print("Hello")
@@ -170,7 +170,7 @@ class ScreenApp(App):
                 conflict_sections = self.conflict_detector.parse_conflict_sections(content)
                 
                 conflict_text = "\n".join(
-                    f"--- Conflict Section {i+1} ---\nCurrent changes:\n{''.join(section['current'])}\nIncoming changes:\n{''.join(section['incoming'])}"
+                    f"--- Conflict Section {i+1} ---\nCurrent changes:\n{''.join(section['current'][1])}\nIncoming changes:\n{''.join(section['incoming'][1])}"
                     for i, section in enumerate(conflict_sections)
                 )
                 self.comment_content = conflict_text

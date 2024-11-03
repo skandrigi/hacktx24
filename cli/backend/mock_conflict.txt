@@ -1,4 +1,3 @@
-# mock_conflict.txt
 
 This is some initial content.
 <<<<<<< HEAD
