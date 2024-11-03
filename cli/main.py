@@ -114,6 +114,8 @@ class ScreenApp(App):
                 resolved_popup.append("🍊 Merge conflict ", style="white")
                 resolved_popup.append("resolved!", style="#A6E1E5")
                 self.show_temp_popup(resolved_popup)
+            else:
+                asyncio.create_task(self.define_commits(content, self.path))
         else:
             print("invalid type")
 
@@ -138,6 +140,8 @@ class ScreenApp(App):
             resolved_popup.append("🍊 Merge conflict ", style="white")
             resolved_popup.append("resolved!", style="#A6E1E5")
             self.show_temp_popup(resolved_popup)
+        else:
+            asyncio.create_task(self.define_commits(content, self.path))
 
     async def define_commits(self, file_content, path):
         """Retrieve and display commit information asynchronously."""
@@ -189,8 +193,9 @@ class ScreenApp(App):
         popup = self.query_one("#popup", Static)
         popup.styles.opacity = 1.0
         popup.update(message)
+        popup.styles.opacity = 1
         popup.styles.display = "block" 
-        self.set_timer(1, lambda: self.hide_temp_popup())
+        self.set_timer(2, lambda: self.hide_temp_popup())
 
     def hide_temp_popup(self):
         """Hide the temporary popup."""
