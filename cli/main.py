@@ -1,13 +1,15 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Static
+from textual.widgets import Static, DirectoryTree
 from textual.containers import Horizontal, Vertical
+from rich.syntax import Syntax
+from rich.traceback import Traceback
 
 
 class ScreenApp(App):
     def compose(self) -> ComposeResult:
         self.widget = Static("<<< MERGR 🍒")
-        self.files = Static("")
-        self.code = Static("")
+        self.files = DirectoryTree("./", id="file-browser") 
+        self.code = Static("", id="code-view")
         self.comment = Static("")
         self.command = Static("")
 
@@ -70,6 +72,23 @@ class ScreenApp(App):
         self.command.styles.height= "13vh"
         self.command.styles.width= "75vw"
         self.command.styles.margin = 2
+
+    def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
+        event.stop()
+        code_view = self.query_one("#code-view", Static)
+
+        try:
+            syntax = Syntax.from_path(
+                str(event.path),
+                line_numbers=True,
+                word_wrap=False,
+                indent_guides=True,
+                theme="github-dark"
+            )
+        except Exception:
+            code_view.update(Traceback(theme="github-dark", width=None))
+        else:
+            code_view.update(syntax)
 
 if __name__ == "__main__":
     app = ScreenApp()
