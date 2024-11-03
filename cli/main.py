@@ -47,6 +47,7 @@ class ScreenApp(App):
         self.code.styles.height= "76vh"
         self.code.styles.width= "37vw"
         self.code.styles.margin = 2
+        self.code.styles.overflow = "auto" 
         
         self.comment.styles.border_left = ("dashed","#1C6FFF")
         self.comment.styles.border_right = ("dashed","#1C6FFF")
@@ -58,6 +59,7 @@ class ScreenApp(App):
         self.comment.styles.height= "76vh"
         self.comment.styles.width= "37vw"
         self.comment.styles.margin = 2
+        self.comment.styles.overflow = "auto" 
 
     def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
         event.stop()
