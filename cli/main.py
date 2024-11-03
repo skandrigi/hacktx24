@@ -83,6 +83,7 @@ class ScreenApp(App):
         syntax = Syntax(content, "text", line_numbers=True, theme="github-dark")
         code_view.update(syntax)
         comment_view = self.query_one("#comment-view", Static)
+        # Run define_commits asynchronously to avoid blocking
         asyncio.create_task(self.define_commits(event.path))
         try:
             # Check for conflict markers and display conflicts
