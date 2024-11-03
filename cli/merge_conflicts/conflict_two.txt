@@ -1,0 +1,8 @@
+def calculate_area(radius):
+    """Calculate the area of a circle."""
+<<<<<<< main
+    return 3.14159 * radius ** 2
+=======
+    pi = 3.14159
+    return pi * radius * radius
+>>>>>>> feature

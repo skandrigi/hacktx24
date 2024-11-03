@@ -1,0 +1,7 @@
+{
+    "version": "<<<<<<< main\n1.0\n=======\n1.1\n>>>>>>> feature",
+    "logging": {
+        "level": "<<<<<<< main\ninfo\n=======\ndebug\n>>>>>>> feature",
+        "output": "<<<<<<< main\nfile\n=======\nconsole\n>>>>>>> feature"
+    }
+}
