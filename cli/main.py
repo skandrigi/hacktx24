@@ -27,6 +27,7 @@ INITIAL_TEXT = 'Print("Hello World!")'
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
     position: int = 0
+    comment_content = reactive("This is the initial content")
     def __init__(self, repo_path="./test_repo"):
         super().__init__()
         self.repo_manager = RepositoryManager(repo_path)
