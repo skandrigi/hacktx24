@@ -115,7 +115,7 @@ class ScreenApp(App):
         else:
             print("invalid type")
 
-    async def action_click_button(self, event: events.Key) -> None:
+    def on_key(self, event: events.Key) -> None:
         if len(self.changes) == 0:
             return
         if event == "i":
