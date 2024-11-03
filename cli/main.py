@@ -33,7 +33,7 @@ class ScreenApp(App):
     def compose(self) -> ComposeResult:
         self.widget = Static("<<< MERGR 🍒", id="header-widget")
         self.files = DirectoryTree("./", id="file-browser", classes="grid")
-        self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view")
+        self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view", classes="grid")
         self.comment = Static("", id="comment-view", classes="grid")
         self.command = Static("", id="command-view", classes="grid")
 

@@ -16,21 +16,11 @@ Screen {
     background: #2B263B;
 }
 
-#code-container {
-    height: 100%;
-}
-
-.code-view {
-    height: 200%; 
-}
-
 .grid {
     height: 100%;
     border: solid #1c6fff;
 }
 
-LoadingIndicator {
-    height: 1;
-    dock: bottom;
-    margin: 1;
-}
+# .grid::focus {
+    
+# }
