@@ -22,9 +22,9 @@ INITIAL_TEXT = 'Print("Hello World!")'
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
     BINDINGS = [
-        ("a", f"fix_merge('incoming')", "Resolve Incoming Conflict"),
-        ("b", f"fix_merge('current')", "Resolve Current Conflict"),
-        ("c", f"fix_merge('both')", "Resolve Both Conflict")
+        ("i", f"fix_merge('incoming')", "Resolve Incoming Conflict"),
+        ("c", f"fix_merge('current')", "Resolve Current Conflict"),
+        ("b", f"fix_merge('both')", "Resolve Both Conflict")
     ]
     comment_content = reactive("This is the initial content")
 # 
