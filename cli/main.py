@@ -56,26 +56,35 @@ class ScreenApp(App):
         self.command.border_title = "COMMANDS"
 
     async def define_commits(self, file_content):
-        completion = await get_completion(file_content)
-        head, incoming, both = extract_answer(completion)
+        print("in define_commits")
+        with open(file_content, 'r') as f:
+            completion = await get_completion(f.read())
+            print(completion)
+            # answers == extract_answer(completion)
+
 
         comment_view = self.query_one("#comment-view", Static)
-        comment_view.update(head + incoming + both)
+        if file_content == self.query_one(DirectoryTree.path):
+            comment_view.update("hello")
 
-    def on_directory_tree_file_selected(
+    async def on_directory_tree_file_selected(
         self, event: DirectoryTree.FileSelected
     ) -> None:
         """Handle the event when a file is selected in the directory tree."""
         event.stop()
         file_path = str(event.path)
+        
+        # Do the quick file reading first
+        with open(file_path, "r") as file:
+            content = file.read()
+        
+        # Update UI immediately with file content
         code_view = self.query_one("#code-view", Static)
+        syntax = Syntax(content, "text", line_numbers=True, theme="github-dark")
+        code_view.update(syntax)
         comment_view = self.query_one("#comment-view", Static)
-
+        asyncio.create_task(self.define_commits(event.path))
         try:
-            # Read the selected file's content
-            with open(file_path, "r") as file:
-                content = file.read()
-
             # Check for conflict markers and display conflicts
             if "<<<<<<<" in content and "=======" in content and ">>>>>>>" in content:
                 conflict_sections = self.conflict_detector.parse_conflict_sections(
@@ -88,7 +97,6 @@ class ScreenApp(App):
 
                 comment_view.update(conflict_text)
 
-                asyncio.create_task(self.define_commits(content))
 
                 # Display raw file content with conflict markers in the code view
                 syntax = Syntax(content, "text", line_numbers=True, theme="github-dark")
@@ -99,6 +107,7 @@ class ScreenApp(App):
                     "Choose [c] to accept Current changes or [i] for Incoming changes.\n"
                 )
                 comment_view.update(resolution_instruction)
+
             else:
                 # If no conflict markers are detected, display file content normally
                 syntax = Syntax(content, "text", line_numbers=True, theme="github-dark")
