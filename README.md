@@ -35,10 +35,13 @@ Mergr integrates conflict detection, resolution, and staged merging into a unifi
 2. Install required dependencies:
 
    ```bash
-   pip install -r requirements.txt
+   uv sync
    ```
 
-3. (Optional) Set up your OpenAI API key for AI-powered conflict suggestions. Replace `"your_openai_api_key_here"` in `ScreenApp` initialization.
+3. (Optional) Set up your OpenAI API key for AI-powered conflict suggestions.
+```bash
+export OPENAI_API_KEY=<sk-yourkey>
+```
 
 ### Running the App
 
