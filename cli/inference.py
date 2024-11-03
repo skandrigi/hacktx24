@@ -1,8 +1,7 @@
 import asyncio
-from openai import OpenAI
+import openai
 import re
 
-client = OpenAI()
 
 calculate_discount_code = """
 def calculate_discount(user, order_total, seasonal_promotion=False):
@@ -45,7 +44,7 @@ async def get_completion(git_conflict):
 
     with open("prompt.txt", "r") as f:
         text = f.read()
-        completion = client.chat.completions.create(
+        completion = await openai.ChatCompletion.acreate(
             model="gpt-4o-mini",
             messages=[
                 {
