@@ -2,6 +2,7 @@ Screen {
     layout: grid;
     grid-size: 3 3;
     grid-rows: 1fr 10fr 2fr;
+    grid-columns: 3fr 5fr 5fr;
     background: #2B263B;
 }
 
@@ -27,4 +28,34 @@ Screen {
 .grid {
     height: 100%;
     border: solid #1c6fff;
+}
+
+.action-button {
+    background: #28233B; 
+}
+
+.action-button:hover {
+    background: #231E34;
+    color: white;
+}
+
+.action-button:focus {
+    color: #FFABAB;
+}
+
+.popup {
+    display: none; /* Hide by default */
+    background: #3E3855; /* Semi-transparent background */
+    padding: 1; /* Padding for spacing */
+    margin-bottom: 1; /* Space between the pop-up and other elements */
+    color: white; 
+}
+
+.popup.visible {
+    display: block; 
+}
+
+#button-container {
+    width: 100%; 
+    align: center middle;
 }

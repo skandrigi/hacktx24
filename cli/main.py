@@ -8,10 +8,11 @@ from backend.repository import RepositoryManager
 from backend.conflict import ConflictDetector
 from backend.commit import CommitComparer
 from backend.resolution import StagingManager
+import asyncio
 
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
-
+    position: int = 0
     def __init__(self, repo_path="./test_repo"):
         super().__init__()
         self.repo_manager = RepositoryManager(repo_path)
@@ -25,17 +26,20 @@ class ScreenApp(App):
         self.code = Static("", id="code-view", classes="grid")
         self.comment = Static("", id="comment-view", classes="grid")
         self.command = Static("", id="command-view", classes="grid")
+        self.popup = Static("This is a temporary pop-up!", id="popup", classes="popup")
 
         yield self.widget
         yield self.files
         yield self.code
         yield self.comment
+        yield self.popup
 
         with Horizontal(id="button-container"):
             yield Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button")
             yield Button("🍊 Accept Current", id="acceptcurr-button", classes="action-button")
             yield Button("🍓 Accept Both", id="acceptboth-button", classes="action-button")
             yield Button("🤖 Accept AI", id="ai-button", classes="action-button")
+        
 
     def on_mount(self) -> None:
         # Set up initial view titles and styles
@@ -125,9 +129,21 @@ class ScreenApp(App):
         if not self.repo_manager.get_files_status():
             self.staging_manager.continue_merge()
             self.comment.update("Merge completed successfully.")
+            self.show_temp_popup("Conflicts detected!")
         else:
             self.comment.update("Some conflicts are still unresolved. Resolve all conflicts to complete the merge.")
+    
+    async def show_temp_popup(self, message: str) -> None:
+        """Show a temporary pop-up message."""
+        self.popup.update(message)  # Update the pop-up message
+        self.popup.visible = True  # Make the pop-up visible
+        self.refresh()  # Refresh the layout to show the pop-up
 
+        await asyncio.sleep(2)  # Show the pop-up for 2 seconds
+
+        self.popup.visible = False  # Hide the pop-up
+        self.refresh()  # Refresh again to hide the pop-up
+        
 if __name__ == "__main__":
     repo_path = "./test_repo"  # Specify path to your repository
     app = ScreenApp()
