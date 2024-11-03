@@ -21,6 +21,11 @@ INITIAL_TEXT = 'Print("Hello World!")'
 
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
+    BINDINGS = [
+        ("a", f"fix_merge('incoming')", "Resolve Incoming Conflict"),
+        ("b", f"fix_merge('current')", "Resolve Current Conflict"),
+        ("c", f"fix_merge('both')", "Resolve Both Conflict")
+    ]
     comment_content = reactive("This is the initial content")
 # 
     def __init__(self, openai_api_key=None):
@@ -30,12 +35,10 @@ class ScreenApp(App):
         self.conflict_detector = ConflictDetector()
         self.staging_manager = StagingManager()
         self.changes = []
-        self.bind("a", lambda: self.action_fix_merge('incoming', self.path), "Resolve Incoming Conflict")
         self.path = "."
         # Optionally, initialize OpenAI client here if needed for AI conflict resolution
         # self.openai_client = OpenAIClient(openai_api_key) if openai_api_key else None
     
-
     def compose(self):
         # Define UI components
         self.widget = Static("<<< MERGR 🍒", id="header-widget")
@@ -92,21 +95,17 @@ class ScreenApp(App):
         comment_title.append("C", style="white")
         comment_title.append("\U00002b24", style="#FFABAB")
         comment_title.append("MMENTS", style="white")
-        self.comment.border_title = comment_title
+        self.comment.border_title = comment_title 
         self.comment.border_title_align = "left"
 
-    def action_fix_merge(self, type, file):
+    def action_fix_merge(self, type):
         if len(self.changes) == 0:
             return
-        if type == "incoming":
-            self.staging_manager.resolve_conflict(type, file)
+        if type in ("current", "incoming", "both"):
+            self.staging_manager.resolve_and_save(type, self.path)
             self.changes = self.changes[1:]
-        elif type == "current":
-            self.staging_manager.resolve_conflict(type, file)
-            self.changes = self.changes[1:]
-        elif type == "both":
-            self.staging_manager.resolve_conflict(type, file)
-            self.changes = self.changes[1:]
+            if(len(self.changes) == 0):
+                print("alert!")
         else:
             print("invalid type")
 
@@ -144,6 +143,8 @@ class ScreenApp(App):
                     f"--- Conflict Section {i+1} ---\nCurrent changes:\n{''.join(section['current'][1])}\nIncoming changes:\n{''.join(section['incoming'][1])}"
                     for i, section in enumerate(conflict_sections)
                 )
+
+                self.changes = conflict_sections
                 self.comment_content = conflict_text
                 asyncio.create_task(self.define_commits(content, file_path))
             else:
