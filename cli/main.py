@@ -1,4 +1,5 @@
 import asyncio
+from textual import events
 
 try:
     import httpx
@@ -44,11 +45,10 @@ class ScreenApp(App):
         yield self.comment
         yield self.popup
 
-        # with Horizontal(id="button-container"):
-        #     yield Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button")
-        #     yield Button("🍊 Accept Current", id="acceptcurr-button", classes="action-button")
-        #     yield Button("🍓 Accept Both", id="acceptboth-button", classes="action-button")
-        #     yield Button("🤖 Accept AI", id="ai-button", classes="action-button")
+        with Horizontal(id="button-container"):
+             yield Button("[a] Accept Incoming", id="resolve-button", classes="action-button")
+             yield Button("[c] Accept Current", id="acceptcurr-button", classes="action-button")
+             yield Button("[b] Accept Both", id="acceptboth-button", classes="action-button")
 
     def on_mount(self) -> None:
         # Set up initial view titles and styles
@@ -71,6 +71,17 @@ class ScreenApp(App):
         comment_title.append("MMENTS", style="white")
         self.comment.border_title = comment_title
         self.comment.border_title_align = "left"
+
+    async def on_key(self, event: events.Key) -> None:
+        line = self.conflict_detector.get_conflict_lines(self, self.path)
+
+        if event.key == "a":
+            self.staging_manager.accept_incoming(self, self.path)
+        elif event.key == "c":
+            self.staging_manager.accept_current(self, self.path)
+        elif event.key == "b":
+            self.staging_manager.keep_both(self, self.path)
+            
 
     async def define_commits(self, file_content, path):
         print("directory tree path:", self.query_one(DirectoryTree).path, "input path:",  path)
