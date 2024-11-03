@@ -15,6 +15,7 @@ from textual.app import App, ComposeResult
 from textual.widgets import Static, DirectoryTree, Button, TextArea
 from textual.containers import Horizontal, Vertical, ScrollableContainer
 from rich.style import Style
+from rich.text import Text
 from textual.widgets.text_area import TextAreaTheme
 
 from backend.merge_conflict_manager import MergeConflictManager
@@ -92,6 +93,8 @@ class ScreenApp(App):
         )
         self.code.register_theme(my_theme)
         self.code.theme = "pacs"
+        self.comment = Static("", id="comment-view", classes="grid")
+        self.popup = Static("This is a temporary pop-up!", id="popup", classes="popup")
 
         yield self.widget
         yield self.files
@@ -100,11 +103,26 @@ class ScreenApp(App):
         yield self.popup
 
     def on_mount(self) -> None:
-        # Set up UI titles
-        self.files.border_title = Text("FILES", style="white")
+        # Set up initial view titles and styles
+        files_title = Text("", style="white")
+        files_title.append("FILES", style="white")
+        self.files.border_title = files_title
         self.files.border_title_align = "left"
-        self.code.border_title = Text("CODE", style="white")
-        self.comment.border_title = Text("COMMENTS", style="white")
+
+        code_title = Text("", style="white")
+        code_title.append("C", style="white")
+        code_title.append("\U00002b24", style="#FFABAB")
+        code_title.append("DE", style="white")
+        self.code.border_title = code_title
+        self.code.border_title_align = "left"
+
+        # Title for Comment View
+        comment_title = Text("", style="white")
+        comment_title.append("C", style="white")
+        comment_title.append("\U00002b24", style="#FFABAB")
+        comment_title.append("MMENTS", style="white")
+        self.comment.border_title = comment_title
+        self.comment.border_title_align = "left"
 
     async def on_key(self, event: events.Key) -> None:
         """Handle keyboard input for conflict resolution actions."""
