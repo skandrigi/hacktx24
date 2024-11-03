@@ -56,16 +56,15 @@ class ScreenApp(App):
         self.comment.border_title = "COMMENTS"
         self.command.border_title = "COMMANDS"
 
-    async def define_commits(self, file_content):
-        print("in define_commits")
+    async def define_commits(self, file_content, path):
+        print("directory tree path:", self.query_one(DirectoryTree).path, "input path:",  path)
         # Use asynchronous file reading
         completion = await get_completion(file_content)
         answers = extract_answer(completion)
 
 
         comment_view = self.query_one("#comment-view", Static)
-        if file_content == self.query_one(DirectoryTree).path:
-            comment_view.update(answers)
+        comment_view.update("".join(answers))
 
     async def on_directory_tree_file_selected(
         self, event: DirectoryTree.FileSelected
@@ -107,7 +106,7 @@ class ScreenApp(App):
                     "Choose [c] to accept Current changes or [i] for Incoming changes.\n"
                 )
                 comment_view.update(resolution_instruction)
-                asyncio.create_task(self.define_commits(content))
+                asyncio.create_task(self.define_commits(content, file_path))
 
             else:
                 # If no conflict markers are detected, display file content normally
