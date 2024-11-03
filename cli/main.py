@@ -27,8 +27,6 @@ INITIAL_TEXT = 'Print("Hello World!")'
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
     position: int = 0
-    comment_content = reactive("No merge conflicts yet... (unicode thing here)")
-
     def __init__(self, repo_path="./test_repo"):
         super().__init__()
         self.repo_manager = RepositoryManager(repo_path)
@@ -96,17 +94,6 @@ class ScreenApp(App):
         self.comment.border_title_align = "left"
         
         self.show_temp_popup("🍓 Merge conflict resolved!")
-
-    async def on_key(self, event: events.Key) -> None:
-        line = self.conflict_detector.get_conflict_lines(self, self.path)
-
-        if event.key == "a":
-            self.staging_manager.accept_incoming(self, self.path)
-        elif event.key == "c":
-            self.staging_manager.accept_current(self, self.path)
-        elif event.key == "b":
-            self.staging_manager.keep_both(self, self.path)
-            
 
     async def on_key(self, event: events.Key) -> None:
         line = self.conflict_detector.get_conflict_lines(self, self.path)
@@ -214,23 +201,11 @@ class ScreenApp(App):
         popup = self.query_one("#popup", Static)
         popup.styles.display = "none"
 
-    def show_temp_popup(self, message):
-        """Display a temporary popup with a message."""
-        popup = self.query_one("#popup", Static)
-        popup.update(message)
-        popup.styles.display = "block" 
-        self.set_timer(2, lambda: self.hide_temp_popup())
-
-    def hide_temp_popup(self):
-        """Hide the temporary popup."""
-        popup = self.query_one("#popup", Static)
-        popup.styles.display = "none"
-
     def finalize_merge(self):
         """Finalize the merge process if all conflicts are resolved."""
         if not self.repo_manager.get_files_status():
             self.staging_manager.continue_merge()
-            self.comment_content.update("Merge completed successfully.")
+            self.comment.update("Merge completed successfully.")
             self.show_temp_popup("Conflicts detected!")
         else:
             self.comment_content.update(

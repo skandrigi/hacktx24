@@ -2,7 +2,7 @@ Screen {
     layout: grid;
     grid-size: 3 3;
     grid-rows: 1fr 10fr 2fr;
-    grid-columns: 2fr 5fr 5fr;
+    grid-columns: 3fr 5fr 5fr;
     background: #2B263B;
     layers: below above;
 }
