@@ -32,9 +32,10 @@ class ScreenApp(App):
         yield self.comment
 
         with Horizontal(id="button-container"):
-            yield Button("🍊 Commit", id="commit-button", classes="action-button")
-            yield Button("\U000025AA Stage", id="stage-button", classes="action-button")
-            yield Button("\U000015E3 Resolve", id="resolve-button", classes="action-button")
+            yield Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button")
+            yield Button("🍊 Accept Current", id="acceptcurr-button", classes="action-button")
+            yield Button("🍓 Accept Both", id="acceptboth-button", classes="action-button")
+            yield Button("🤖 Accept AI", id="ai-button", classes="action-button")
 
     def on_mount(self) -> None:
         # Set up initial view titles and styles
