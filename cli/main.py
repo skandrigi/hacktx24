@@ -1,5 +1,6 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Static, DirectoryTree
+from textual.widgets import Static, DirectoryTree, ScrollView
+from textual.scroll_view import ScrollView
 from textual.containers import Horizontal, Vertical
 from rich.traceback import Traceback
 from rich.syntax import Syntax
@@ -12,7 +13,7 @@ from backend.resolution import StagingManager
 
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
-
+    
     def compose(self) -> ComposeResult:
         self.widget = Static("<<< MERGR 🍒", id="header-widget")
         self.files = DirectoryTree("./", id="file-browser", classes="grid")
@@ -27,8 +28,7 @@ class ScreenApp(App):
 
     def on_mount(self) -> None:
         # Only custom title text or unique logic remains here.
-        self.files.styles.background = "#2B263B"
-        
+
         # Title for Code View
         code_title = Text("", style="white")
         code_title.append("C", style="white")
@@ -103,7 +103,7 @@ class ScreenApp(App):
                     "text",
                     line_numbers=True,
                     word_wrap=False,
-                    theme="github-dark",
+                    theme="dracula",
                 )
                 code_view.update(syntax)
                 comment_view.update("No conflicts detected in this file.")

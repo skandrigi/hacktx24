@@ -1,3 +1,4 @@
+/* boxes.tcss */
 Screen {
     layout: grid;
     grid-size: 3 3;
@@ -10,9 +11,19 @@ Screen {
     height: 100%;
     border: none;
 }
+
 #file-browser {
     row-span: 2;
 }
+
+#code-container {
+    height: 100%; /* Use full available height for the ScrollView */
+}
+
+.code-view {
+    height: 200%; /* Ensure the content is tall enough to require scrolling */
+}
+
 .grid {
     height: 100%;
     border: solid #1c6fff;
