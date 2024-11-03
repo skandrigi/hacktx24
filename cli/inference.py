@@ -1,3 +1,4 @@
+import asyncio
 from openai import OpenAI
 import re
 
@@ -32,11 +33,10 @@ def calculate_discount(user, order_total, seasonal_promotion=False):
 """
 
 
-def get_completion(git_conflict):
+async def get_completion(git_conflict):
     conflicts = re.findall(
         r"<<<<<<< HEAD(.*?)=======(.*?)>>>>>>> .*?$", git_conflict, re.DOTALL
     )
-
 
     for index, (current_branch, incoming_branch) in enumerate(conflicts):
         print(
@@ -44,7 +44,7 @@ def get_completion(git_conflict):
         )
 
     with open("prompt.txt", "r") as f:
-        text =  f.read()
+        text = f.read()
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -54,7 +54,7 @@ def get_completion(git_conflict):
                 },
                 {
                     "role": "user",
-                    "content": f'{text} Q: Given this following code with a merge conflict:\n {git_conflict} \nWhat would each version do?'
+                    "content": f"{text} Q: Given this following code with a merge conflict:\n {git_conflict} \nWhat would each version do?",
                 },
             ],
         )
@@ -62,5 +62,20 @@ def get_completion(git_conflict):
     return completion.choices[0].message.content
 
 
+def extract_answer(completion):
+    pattern = r"HEAD version:\s*(.*?)(?=\n\n|INCOMING version:|BOTH versions:)|INCOMING version:\s*(.*?)(?=\n\n|BOTH versions:|$)|BOTH versions:\s*(.*?)(?=\n\n|$)"
+    matches = re.findall(pattern, completion, re.DOTALL)
 
-print(get_completion(calculate_discount_code))
+    # Flatten the matches and filter out empty strings
+    result = tuple(part.strip() for match in matches for part in match if part.strip())
+    return result
+
+
+async def main():
+    completion = await get_completion(calculate_discount_code)
+    answer = extract_answer(completion)
+    print(answer)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
