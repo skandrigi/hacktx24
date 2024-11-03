@@ -109,6 +109,20 @@ class ScreenApp(App):
         else:
             print("invalid type")
 
+    async def action_click_button(self, event: events.Key) -> None:
+        if len(self.changes) == 0:
+            return
+        if event == "i":
+            self.staging_manager.resolve_and_save("incoming", self.path)
+            self.changes = self.changes[1:]
+        elif event == "c":
+            self.staging_manager.resolve_and_save("current", self.path)
+            self.changes = self.changes[1:]
+        elif event == "b":
+            self.staging_manager.resolve_and_save("both", self.path)
+            self.changes = self.changes[1:]
+        
+
     async def define_commits(self, file_content, path):
         """Retrieve and display commit information asynchronously."""
         completion = await get_completion(file_content)
