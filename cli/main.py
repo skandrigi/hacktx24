@@ -55,7 +55,7 @@ class ScreenApp(App):
     ) -> None:
         event.stop()
         code_view = self.query_one("#code-view", Static)
-        comment_view = self.query_one("#comment", Static)
+        comment_view = self.query_one("#comment-view", Static)
 
         # Get the path of the selected file
         file_path = str(event.path)
