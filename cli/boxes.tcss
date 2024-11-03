@@ -30,6 +30,12 @@ Screen {
     border: solid #1c6fff;
 }
 
+LoadingIndicator {
+    height: 1;
+    dock: bottom;
+    margin: 1;
+}
+
 .action-button {
     background: #28233B; 
 }
