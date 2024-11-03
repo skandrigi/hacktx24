@@ -34,23 +34,21 @@ class ScreenApp(App):
         code_title.append("C", style="white")
         code_title.append("\U00002b24", style="#FFABAB")
         code_title.append("DE", style="white")
-        self.code.border_title = code_title
+        self.code.border_title = str(code_title) if isinstance(code_title, Text) else code_title
         self.code.border_title_align = "left"
-        
-
         # Title for Comment View
         comment_title = Text("", style="white")
         comment_title.append("C", style="white")
         comment_title.append("\U00002b24", style="#FFABAB")
         comment_title.append("MMENTS", style="white")
-        self.comment.border_title = comment_title
+        self.code.border_title = str(code_title) if isinstance(code_title, Text) else code_title
         self.comment.border_title_align = "left"
 
         # Title for Command View
         command_title = Text("C", style="white")
         command_title.append("\U00002b24", style="#FFABAB")
         command_title.append("MMAND", style="white")
-        self.command.border_title = command_title
+        self.code.border_title = str(code_title) if isinstance(code_title, Text) else code_title
         self.command.border_title_align = "left"
 
     def on_directory_tree_file_selected(
