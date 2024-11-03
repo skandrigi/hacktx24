@@ -5,22 +5,20 @@ from rich.traceback import Traceback
 from rich.syntax import Syntax
 from rich.text import Text
 
+
 class ScreenApp(App):
-    
+    CSS_PATH = "boxes.tcss"
     def compose(self) -> ComposeResult:
-        self.widget = Static("<<< MERGR 🍒")
-        self.files = DirectoryTree("./", id="file-browser") 
-        self.code = Static("", id="code-view")
-        self.comment = Static("")
-        self.command = Static("")
+        self.widget = Static("<<< MERGR 🍒", id="header-widget")
+        self.files = DirectoryTree("./", id="file-browser", classes="grid")
+        self.code = Static("", id="code-view", classes="grid")
+        self.comment = Static("", id="comment-view", classes="grid")
+        self.command = Static("", id="command-view", classes="grid")
 
         yield self.widget
-        with Horizontal():
-            yield self.files
-            with Vertical():
-                with Horizontal():
-                    yield self.code
-                    yield self.comment
+        yield self.files
+        yield self.code
+        yield self.comment
 
     def on_mount(self) -> None:
         # Screen styles
