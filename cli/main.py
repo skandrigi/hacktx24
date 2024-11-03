@@ -24,9 +24,11 @@ class ScreenApp(App):
     BINDINGS = [
         ("i", f"fix_merge('incoming')", "Resolve Incoming Conflict"),
         ("c", f"fix_merge('current')", "Resolve Current Conflict"),
-        ("b", f"fix_merge('both')", "Resolve Both Conflict")
+        ("b", f"fix_merge('both')", "Resolve Both Conflicts")
     ]
-    comment_content = reactive("This is the initial content")
+    flavor = Text("Edit a merge conflict to get started! ", style="white")
+    flavor.append("\U000015E3", style="#1C6FFF")
+    comment_content = reactive(flavor)
 # 
     def __init__(self, openai_api_key=None):
         # Backend initialization
