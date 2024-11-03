@@ -1,8 +1,8 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Static, DirectoryTree
 from textual.containers import Horizontal, Vertical
-from rich.syntax import Syntax
 from rich.traceback import Traceback
+from rich.syntax import Syntax
 from rich.text import Text
 
 class ScreenApp(App):
@@ -12,7 +12,6 @@ class ScreenApp(App):
         self.files = DirectoryTree("./", id="file-browser") 
         self.code = Static("", id="code-view")
         self.comment = Static("")
-        self.command = Static("")
 
         yield self.widget
         with Horizontal():
@@ -21,7 +20,6 @@ class ScreenApp(App):
                 with Horizontal():
                     yield self.code
                     yield self.comment
-                yield self.command
 
     def on_mount(self) -> None:
         # Screen styles
@@ -39,7 +37,7 @@ class ScreenApp(App):
         self.files.border_title = "FILES"
         self.files.border_title_align = "left"
         self.files.styles.border_title_color = "white"
-        self.files.styles.height= "72vh"
+        self.files.styles.height= "76vh"
         self.files.styles.width= "17vw"
         self.files.styles.margin = 2
         
@@ -55,13 +53,14 @@ class ScreenApp(App):
         self.code.border_title = code_title
         self.code.border_title_align = "left"
         self.code.styles.border_title_color = "white"
-        self.code.styles.height= "57vh"
+        self.code.styles.height= "76vh"
         self.code.styles.width= "37vw"
         self.code.styles.margin = 2
 
         comment_title = Text("C", style="white")
         comment_title.append("\U000025CF", style="FFABAB") 
         comment_title.append("MMENTS", style="white")
+        self.code.styles.overflow = "auto" 
         
         self.comment.styles.border_left = ("dashed","#1C6FFF")
         self.comment.styles.border_right = ("dashed","#1C6FFF")
@@ -70,7 +69,7 @@ class ScreenApp(App):
         self.comment.border_title = comment_title
         self.comment.border_title_align = "left"
         self.comment.styles.border_title_color = "white"
-        self.comment.styles.height= "57vh"
+        self.comment.styles.height= "76vh"
         self.comment.styles.width= "37vw"
         self.comment.styles.margin = 2
 
@@ -88,6 +87,7 @@ class ScreenApp(App):
         self.command.styles.height= "13vh"
         self.command.styles.width= "75vw"
         self.command.styles.margin = 2
+        self.comment.styles.overflow = "auto" 
 
     def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
         event.stop()
