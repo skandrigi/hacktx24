@@ -21,6 +21,9 @@ INITIAL_TEXT = 'Print("Hello World!")'
 
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
+    BINDINGS = [
+        ("a", "fix_merge('incoming',self.path)", "Resolve Incoming Conflict")
+    ]
     comment_content = reactive("This is the initial content")
 # 
     def __init__(self, openai_api_key=None):
@@ -29,6 +32,8 @@ class ScreenApp(App):
         self.conflict_manager = MergeConflictManager(conflicts_folder="cli/merge-conflicts")
         self.conflict_detector = ConflictDetector()
         self.staging_manager = StagingManager()
+        self.changes = []
+        self.path = "."
         # Optionally, initialize OpenAI client here if needed for AI conflict resolution
         # self.openai_client = OpenAIClient(openai_api_key) if openai_api_key else None
     
@@ -120,27 +125,20 @@ class ScreenApp(App):
         self.comment.border_title = comment_title
         self.comment.border_title_align = "left"
 
-    async def on_key(self, merge_queue, event: events.Key) -> None:
-        """Handle keyboard input for conflict resolution actions."""
-        if merge_queue:
-            if event.key == "a":
-                merge_queue.popleft()
-                next_conflict = merge_queue[0]
-                self.code.text_area.cursor_location = (next_conflict[0],0)
-                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
-                self.staging_manager.accept_incoming(self.path)
-            elif event.key == "c":
-                merge_queue.popleft()
-                next_conflict = merge_queue[0]
-                self.code.text_area.cursor_location = (next_conflict[0],0)
-                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
-                self.staging_manager.accept_current(self.path)
-            elif event.key == "b":
-                merge_queue.popleft()
-                next_conflict = merge_queue[0]
-                self.code.text_area.cursor_location = (next_conflict[0],0)
-                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
-                self.staging_manager.keep_both(self.path)
+    def action_fix_merge(self, type, file):
+        if len(self.changes) == 0:
+            return
+        if type == "incoming":
+            self.staging_manager.resolve_conflict(type, file)
+            self.changes = self.changes[1:]
+        elif type == "current":
+            self.staging_manager.resolve_conflict(type, file)
+            self.changes = self.changes[1:]
+        elif type == "both":
+            self.staging_manager.resolve_conflict(type, file)
+            self.changes = self.changes[1:]
+        else:
+            print("invalid type")
 
     async def define_commits(self, file_content, path):
         """Retrieve and display commit information asynchronously."""
