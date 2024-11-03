@@ -11,10 +11,3 @@ dependencies = [
   "textual-dev>=1.6.1",
   "textual>=0.85.2",
 ]
-
-[project.scripts]
-mergr = "cli.main:main"
-
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
