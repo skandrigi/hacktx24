@@ -10,9 +10,20 @@ Screen {
     height: 100%;
     border: none;
 }
+
 #file-browser {
     row-span: 2;
+    background: #2B263B;
 }
+
+#code-container {
+    height: 100%;
+}
+
+.code-view {
+    height: 200%; 
+}
+
 .grid {
     height: 100%;
     border: solid #1c6fff;

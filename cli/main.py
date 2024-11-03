@@ -44,18 +44,32 @@ class ScreenApp(App):
         yield self.comment
 
         with Horizontal(id="button-container"):
-            yield Button("🍊 Commit", id="commit-button", classes="action-button")
-            yield Button("\U000025aa Stage", id="stage-button", classes="action-button")
-            yield Button(
-                "\U000015e3 Resolve", id="resolve-button", classes="action-button"
-            )
+            yield Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button")
+            yield Button("🍊 Accept Current", id="acceptcurr-button", classes="action-button")
+            yield Button("🍓 Accept Both", id="acceptboth-button", classes="action-button")
+            yield Button("🤖 Accept AI", id="ai-button", classes="action-button")
 
     def on_mount(self) -> None:
         # Set up initial view titles and styles
-        self.files.styles.background = "#2B263B"
-        self.code.border_title = "CODE VIEW"
-        self.comment.border_title = "COMMENTS"
-        self.command.border_title = "COMMANDS"
+        files_title = Text("", style="white")
+        files_title.append("FILES", style="white")
+        self.files.border_title = files_title
+        self.files.border_title_align = "left"
+
+        code_title = Text("", style="white")
+        code_title.append("C", style="white")
+        code_title.append("\U00002b24", style="#FFABAB")
+        code_title.append("DE", style="white")
+        self.code.border_title = code_title
+        self.code.border_title_align = "left"
+        
+        # Title for Comment View
+        comment_title = Text("", style="white")
+        comment_title.append("C", style="white")
+        comment_title.append("\U00002b24", style="#FFABAB")
+        comment_title.append("MMENTS", style="white")
+        self.comment.border_title = comment_title
+        self.comment.border_title_align = "left"
 
     async def define_commits(self, file_content, path):
         print("directory tree path:", self.query_one(DirectoryTree).path, "input path:",  path)

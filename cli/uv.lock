@@ -528,7 +528,6 @@ name = "mergr"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "aiofiles" },
     { name = "datasets" },
     { name = "gitpython" },
     { name = "openai" },
@@ -538,7 +537,6 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "datasets", specifier = ">=3.1.0" },
     { name = "gitpython", specifier = ">=3.1.43" },
     { name = "openai", specifier = ">=1.53.0" },
