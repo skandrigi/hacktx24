@@ -176,9 +176,9 @@ class ScreenApp(App):
                 conflict_sections = self.conflict_detector.parse_conflict_sections(content)
                 
                 conflict_text = "\n\n".join(
-                    f"--- Conflict Section {i+1} ---\n"
-                    f"Current changes:\n{''.join(line + '\n' for line in section['current'][1])}\n"
-                    f"Incoming changes:\n{''.join(line + '\n' for line in section['incoming'][1])}\n"
+                    f"🔥🔥🔥 --- Conflict Section {i+1} --- 🔥🔥🔥\n"
+                    f"🔥 Current changes:\n{''.join(line + '\n' for line in section['current'][1])}\n"
+                    f"🔥 Incoming changes:\n{''.join(line + '\n' for line in section['incoming'][1])}\n"
                     for i, section in enumerate(conflict_sections)
                 )
 
