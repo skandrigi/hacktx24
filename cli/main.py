@@ -97,6 +97,12 @@ class ScreenApp(App):
         yield ScrollableContainer((self.code))
         yield self.comment
         yield self.popup
+        with Horizontal(id="button-container"):
+            yield Button("\U000015E3  Accept Incoming", id="resolve-button", classes="action-button")
+            yield Button("\U00002b24 Accept Current", id="acceptcurr-button", classes="action-button")
+            yield Button("🍓 Accept Both", id="acceptboth-button", classes="action-button")
+            yield Button("🤖 Accept AI", id="ai-button", classes="action-button")
+
 
     def on_mount(self) -> None:
         # Set up initial view titles and styles
