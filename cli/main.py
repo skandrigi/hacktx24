@@ -12,6 +12,7 @@ class ScreenApp(App):
         self.files = DirectoryTree("./", id="file-browser") 
         self.code = Static("", id="code-view")
         self.comment = Static("")
+        self.command = Static("")
 
         yield self.widget
         with Horizontal():
