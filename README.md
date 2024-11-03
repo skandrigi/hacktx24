@@ -39,14 +39,15 @@ Mergr integrates conflict detection, resolution, and staged merging into a unifi
    ```
 
 3. (Optional) Set up your OpenAI API key for AI-powered conflict suggestions.
-```bash
-export OPENAI_API_KEY=<sk-yourkey>
-```
+
+   ```bash
+   export OPENAI_API_KEY=<sk-yourkey>
+   ```
 
 ### Running the App
 
 To start the application, use:
 
-```bash
-uv run main.py
-```
+   ```bash
+   uv run main.py
+   ```
