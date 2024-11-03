@@ -21,7 +21,7 @@ INITIAL_TEXT = 'Print("Hello World!")'
 
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
-
+    position: int = 0
     def __init__(self, repo_path="./test_repo"):
         super().__init__()
         self.repo_manager = RepositoryManager(repo_path)
@@ -36,11 +36,13 @@ class ScreenApp(App):
         self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view", classes="grid")
         self.comment = Static("", id="comment-view", classes="grid")
         self.command = Static("", id="command-view", classes="grid")
+        self.popup = Static("This is a temporary pop-up!", id="popup", classes="popup")
 
         yield self.widget
         yield self.files
         yield ScrollableContainer((self.code))
         yield self.comment
+        yield self.popup
 
         # with Horizontal(id="button-container"):
         #     yield Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button")
@@ -158,6 +160,7 @@ class ScreenApp(App):
         if not self.repo_manager.get_files_status():
             self.staging_manager.continue_merge()
             self.comment.update("Merge completed successfully.")
+            self.show_temp_popup("Conflicts detected!")
         else:
             self.comment.update(
                 "Some conflicts are still unresolved. Resolve all conflicts to complete the merge."
