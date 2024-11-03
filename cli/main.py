@@ -24,6 +24,7 @@ class ScreenApp(App):
 
     def on_mount(self) -> None:
         # Screen styles
+        self.screen.styles.background = "#000000"
         self.widget.styles.width = "100%"
         self.widget.styles.height = "auto"  # Adjust height to auto to fit content
         self.widget.styles.margin = 2
