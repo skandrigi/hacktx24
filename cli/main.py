@@ -35,7 +35,7 @@ class ScreenApp(App):
         # self.openai_client = OpenAIClient(openai_api_key) if openai_api_key else None
     
     BINDINGS = [
-        ("a", f"fix_merge('incoming',{path})", "Resolve Incoming Conflict")
+        ("a", lambda: self.action_fix_merge('incoming', self.path), "Resolve Incoming Conflict")
     ]
 
     def compose(self):
