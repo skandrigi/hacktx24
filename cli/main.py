@@ -1,18 +1,13 @@
 import asyncio
 from textual import events
 
-try:
-    import httpx
-except ImportError:
-    raise ImportError("Please install httpx with 'uv add httpx'")
-
-import aiofiles
 from inference import extract_answer, get_completion
 from collections import deque
 from textual.reactive import reactive
 from textual.widget import Widget
-from textual.app import App, ComposeResult
-from textual.widgets import Static, DirectoryTree, Button, TextArea, Selection
+from textual.app import App 
+from textual.widgets import Static, DirectoryTree, Button, TextArea
+from textual.widgets.text_area import Selection
 from textual.containers import Horizontal, Vertical, ScrollableContainer
 from rich.style import Style
 from rich.text import Text
@@ -27,7 +22,7 @@ INITIAL_TEXT = 'Print("Hello World!")'
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
     comment_content = reactive("This is the initial content")
-    merge_queue = reactive(deque(list(ConflictDetector.conflict_manager.parse_conflict_sections())))
+    # merge_queue = reactive(deque(list(ConflictDetector.conflict_manager.parse_conflict_sections())))
 
     def __init__(self, openai_api_key=None):
         # Backend initialization
@@ -54,9 +49,10 @@ class ScreenApp(App):
                 print("\nIncoming changes:\n", incoming)
 
                 # Optional: Use AI suggestion if OpenAI client is initialized
-                suggestion = self.openai_client.get_suggestion(current, incoming) if self.openai_client else None
-                if suggestion:
-                    print("\nAI Suggested resolution:\n", suggestion)
+                # suggestion = self.openai_client.get_suggestion(current, incoming) if self.openai_client else None
+                # if suggestion:
+                #     print("\nAI Suggested resolution:\n", suggestion)
+                suggestion = "hello"
 
                 # User choice
                 choice = input("Choose resolution ([c] Current, [i] Incoming, [a] AI Suggested, [b] Both): ")
@@ -75,7 +71,7 @@ class ScreenApp(App):
             # Save resolved content for each file
             self.staging_manager.save_resolved_content(filename)
 
-    def compose(self) -> ComposeResult:
+    def compose(self):
         # Define UI components
         self.widget = Static("<<< MERGR 🍒", id="header-widget")
         self.files = DirectoryTree("./", id="file-browser", classes="grid")
@@ -152,7 +148,11 @@ class ScreenApp(App):
         completion = await get_completion(file_content)
         answers = extract_answer(completion)
         if path == self.path:
-            self.comment_content = "".join(answers)
+            self.comment_content = "\n".join(answers)
+
+    def watch_comment_content(self, old_comment: str, new_comment: str) -> None:  
+        print("Hello")
+        self.comment.update(new_comment)
 
     async def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
         """Display selected file content and detect conflicts."""
@@ -174,6 +174,7 @@ class ScreenApp(App):
                     for i, section in enumerate(conflict_sections)
                 )
                 self.comment_content = conflict_text
+                asyncio.create_task(self.define_commits(content, file_path))
             else:
                 self.comment_content = "No conflicts detected in this file."
         except Exception as e:
