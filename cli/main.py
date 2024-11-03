@@ -1,3 +1,12 @@
+import asyncio
+
+try:
+    import httpx
+except ImportError:
+    raise ImportError("Please install httpx with 'uv add httpx' ")
+
+from inference import extract_answer, get_completion
+
 from textual.app import App, ComposeResult
 from textual.widgets import Static, DirectoryTree, Button
 from textual.containers import Horizontal, Vertical
@@ -8,6 +17,7 @@ from backend.repository import RepositoryManager
 from backend.conflict import ConflictDetector
 from backend.commit import CommitComparer
 from backend.resolution import StagingManager
+
 
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
@@ -33,8 +43,10 @@ class ScreenApp(App):
 
         with Horizontal(id="button-container"):
             yield Button("🍊 Commit", id="commit-button", classes="action-button")
-            yield Button("\U000025AA Stage", id="stage-button", classes="action-button")
-            yield Button("\U000015E3 Resolve", id="resolve-button", classes="action-button")
+            yield Button("\U000025aa Stage", id="stage-button", classes="action-button")
+            yield Button(
+                "\U000015e3 Resolve", id="resolve-button", classes="action-button"
+            )
 
     def on_mount(self) -> None:
         # Set up initial view titles and styles
@@ -43,7 +55,16 @@ class ScreenApp(App):
         self.comment.border_title = "COMMENTS"
         self.command.border_title = "COMMANDS"
 
-    def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
+    async def define_commits(self, file_content):
+        completion = await get_completion(file_content)
+        head, incoming, both = extract_answer(completion)
+
+        comment_view = self.query_one("#comment-view", Static)
+        comment_view.update(head + incoming + both)
+
+    def on_directory_tree_file_selected(
+        self, event: DirectoryTree.FileSelected
+    ) -> None:
         """Handle the event when a file is selected in the directory tree."""
         event.stop()
         file_path = str(event.path)
@@ -57,11 +78,16 @@ class ScreenApp(App):
 
             # Check for conflict markers and display conflicts
             if "<<<<<<<" in content and "=======" in content and ">>>>>>>" in content:
-                conflict_sections = self.conflict_detector.parse_conflict_sections(file_path)
+                conflict_sections = self.conflict_detector.parse_conflict_sections(
+                    file_path
+                )
                 conflict_text = "\n".join(
                     f"--- Conflict Section {i+1} ---\nCurrent changes:\n{''.join(section['current'])}\nIncoming changes:\n{''.join(section['incoming'])}"
                     for i, section in enumerate(conflict_sections)
                 )
+
+                # asyncio.create_task(self.define_commits(content))
+
                 comment_view.update(conflict_text)
 
                 # Display raw file content with conflict markers in the code view
@@ -69,7 +95,9 @@ class ScreenApp(App):
                 code_view.update(syntax)
 
                 # Provide resolution instructions to the user
-                resolution_instruction = Text("Choose [c] to accept Current changes or [i] for Incoming changes.\n")
+                resolution_instruction = Text(
+                    "Choose [c] to accept Current changes or [i] for Incoming changes.\n"
+                )
                 comment_view.update(resolution_instruction)
             else:
                 # If no conflict markers are detected, display file content normally
@@ -92,9 +120,9 @@ class ScreenApp(App):
             start, divider, end = section["start"], section["divider"], section["end"]
             # Apply the chosen resolution (current or incoming changes)
             if choice == "incoming":
-                lines[start:end+1] = section["incoming"]
+                lines[start : end + 1] = section["incoming"]
             else:
-                lines[start:end+1] = section["current"]
+                lines[start : end + 1] = section["current"]
 
         # Write resolved changes back to the file
         with open(file_path, "w") as f:
@@ -110,7 +138,10 @@ class ScreenApp(App):
             self.staging_manager.continue_merge()
             self.comment.update("Merge completed successfully.")
         else:
-            self.comment.update("Some conflicts are still unresolved. Resolve all conflicts to complete the merge.")
+            self.comment.update(
+                "Some conflicts are still unresolved. Resolve all conflicts to complete the merge."
+            )
+
 
 if __name__ == "__main__":
     repo_path = "./test_repo"  # Specify path to your repository
