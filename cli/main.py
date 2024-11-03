@@ -10,14 +10,18 @@ class ScreenApp(App):
         self.code = Static("")
         self.comment = Static("")
         self.command = Static("")
-        yield self.widget
 
-        with Horizontal():
-            yield self.files
-            with Vertical():    
+
+        with Vertical():
+            yield self.widget
+
+
+            with Horizontal():
+                yield self.files   
                 yield self.code
                 yield self.comment
-                yield self.command
+
+            yield self.command
 
     def on_mount(self) -> None:
         # Screen styles
@@ -44,7 +48,7 @@ class ScreenApp(App):
         self.code.border_title = "CODE"
         self.code.border_title_align = "left"
         self.code.styles.border_title_color = "white"
-        self.code.styles.height= "40vh"
+        self.code.styles.height= "50vh"
         self.code.styles.width= "37vw"
         self.code.styles.margin = 3
         
@@ -52,10 +56,10 @@ class ScreenApp(App):
         self.comment.styles.border_right = ("dashed","#1C6FFF")
         self.comment.styles.border_top = ("double","#1C6FFF")
         self.comment.styles.border_bottom = ("double","#1C6FFF")
-        self.comment.border_title = "CODE"
+        self.comment.border_title = "COMMENTS"
         self.comment.border_title_align = "left"
         self.comment.styles.border_title_color = "white"
-        self.comment.styles.height= "40vh"
+        self.comment.styles.height= "50vh"
         self.comment.styles.width= "37vw"
         self.comment.styles.margin = 3
 
@@ -63,11 +67,11 @@ class ScreenApp(App):
         self.command.styles.border_right = ("dashed","#1C6FFF")
         self.command.styles.border_top = ("double","#1C6FFF")
         self.command.styles.border_bottom = ("double","#1C6FFF")
-        self.command.border_title = "CODE"
+        self.command.border_title = "COMMAND"
         self.command.border_title_align = "left"
         self.command.styles.border_title_color = "white"
-        self.command.styles.height= "40vh"
-        self.command.styles.width= "37vw"
+        self.command.styles.height= "10vh"
+        self.command.styles.width= "74vw"
         self.command.styles.margin = 3
 
 if __name__ == "__main__":
