@@ -8,13 +8,14 @@ except ImportError:
 
 import aiofiles
 from inference import extract_answer, get_completion
-
+from collections import deque
 from textual.reactive import reactive
 from textual.widget import Widget
 from textual.app import App, ComposeResult
-from textual.widgets import Static, DirectoryTree, Button, TextArea
+from textual.widgets import Static, DirectoryTree, Button, TextArea, Selection
 from textual.containers import Horizontal, Vertical, ScrollableContainer
 from rich.style import Style
+from rich.text import Text
 from textual.widgets.text_area import TextAreaTheme
 
 from backend.merge_conflict_manager import MergeConflictManager
@@ -26,6 +27,7 @@ INITIAL_TEXT = 'Print("Hello World!")'
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
     comment_content = reactive("This is the initial content")
+    merge_queue = reactive(deque(list(ConflictDetector.conflict_manager.parse_conflict_sections())))
 
     def __init__(self, openai_api_key=None):
         # Backend initialization
@@ -35,7 +37,7 @@ class ScreenApp(App):
         self.staging_manager = StagingManager()
         # Optionally, initialize OpenAI client here if needed for AI conflict resolution
         # self.openai_client = OpenAIClient(openai_api_key) if openai_api_key else None
-
+    
     def handle_conflicts(self):
         """Load conflict files, detect conflicts, and guide user through resolution."""
         conflict_files = self.conflict_manager.load_conflict_files()
@@ -92,6 +94,8 @@ class ScreenApp(App):
         )
         self.code.register_theme(my_theme)
         self.code.theme = "pacs"
+        self.comment = Static("", id="comment-view", classes="grid")
+        self.popup = Static("This is a temporary pop-up!", id="popup", classes="popup")
 
         yield self.widget
         yield self.files
@@ -100,20 +104,48 @@ class ScreenApp(App):
         yield self.popup
 
     def on_mount(self) -> None:
-        # Set up UI titles
-        self.files.border_title = Text("FILES", style="white")
+        # Set up initial view titles and styles
+        files_title = Text("", style="white")
+        files_title.append("FILES", style="white")
+        self.files.border_title = files_title
         self.files.border_title_align = "left"
-        self.code.border_title = Text("CODE", style="white")
-        self.comment.border_title = Text("COMMENTS", style="white")
 
-    async def on_key(self, event: events.Key) -> None:
+        code_title = Text("", style="white")
+        code_title.append("C", style="white")
+        code_title.append("\U00002b24", style="#FFABAB")
+        code_title.append("DE", style="white")
+        self.code.border_title = code_title
+        self.code.border_title_align = "left"
+
+        # Title for Comment View
+        comment_title = Text("", style="white")
+        comment_title.append("C", style="white")
+        comment_title.append("\U00002b24", style="#FFABAB")
+        comment_title.append("MMENTS", style="white")
+        self.comment.border_title = comment_title
+        self.comment.border_title_align = "left"
+
+    async def on_key(self, merge_queue, event: events.Key) -> None:
         """Handle keyboard input for conflict resolution actions."""
-        if event.key == "a":
-            self.staging_manager.accept_incoming(self.path)
-        elif event.key == "c":
-            self.staging_manager.accept_current(self.path)
-        elif event.key == "b":
-            self.staging_manager.keep_both(self.path)
+        if merge_queue:
+            if event.key == "a":
+                merge_queue.popleft()
+                next_conflict = merge_queue[0]
+                self.code.text_area.cursor_location = (next_conflict[0],0)
+                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
+                self.staging_manager.accept_incoming(self.path)
+            elif event.key == "c":
+                merge_queue.popleft()
+                next_conflict = merge_queue[0]
+                self.code.text_area.cursor_location = (next_conflict[0],0)
+                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
+                self.staging_manager.accept_current(self.path)
+            elif event.key == "b":
+                merge_queue.popleft()
+                next_conflict = merge_queue[0]
+                self.code.text_area.cursor_location = (next_conflict[0],0)
+                self.code.text_area.selection = Selection(start=(next_conflict[0], 0), end=(next_conflict[1], 0))
+                self.staging_manager.keep_both(self.path)
 
     async def define_commits(self, file_content, path):
         """Retrieve and display commit information asynchronously."""
