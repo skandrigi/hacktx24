@@ -43,7 +43,7 @@ class ScreenApp(App):
         self.files.styles.margin = 2
         
         code_title = Text("C", style="white")
-        code_title.append("\U000025CF", style="FFABAB") 
+        code_title.append("\U00002B24", style="FFABAB") 
         code_title.append("DE", style="white")
         
         self.code.styles.background = "#2B263B"
@@ -60,7 +60,7 @@ class ScreenApp(App):
 
         comment_title = Text("C", style="white")
         comment_title.append("\U00002B24", style="FFABAB") 
-        comment_title.append("\U000025CE", style="FFABAB") 
+        comment_title.append("\U000015E3", style="FFABAB") 
         comment_title.append("MMENTS", style="white")
         self.code.styles.overflow = "auto" 
         
@@ -76,7 +76,7 @@ class ScreenApp(App):
         self.comment.styles.margin = 2
 
         command_title = Text("C", style="white")
-        command_title.append("\U000025CF", style="FFABAB") 
+        command_title.append("\U00002B24", style="FFABAB") 
         command_title.append("MMAND", style="white")
 
         self.command.styles.border_left = ("dashed","#1C6FFF")
