@@ -127,6 +127,13 @@ class ScreenApp(App):
         elif event.button.id == "acceptboth-button":
             self.staging_manager.resolve_and_save("both", self.path)
             self.changes = self.changes[1:]
+        with open(self.path, "r") as file:
+                content = file.read()
+
+        code_view = self.query_one("#code-view")
+        code_view.text = content
+        if(len(self.changes) == 0):
+            print("alert!")
         
 
     async def define_commits(self, file_content, path):
