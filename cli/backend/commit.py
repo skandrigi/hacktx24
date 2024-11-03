@@ -1,3 +1,5 @@
+# Don't need commit.py since we're not managing Git anymore
+
 class CommitComparer:
     def __init__(self, repo_manager):
         self.repo_manager = repo_manager

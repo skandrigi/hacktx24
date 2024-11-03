@@ -1,3 +1,5 @@
+# Don't need repository.py since we're not managing Git anymore
+
 from git import Repo
 
 class RepositoryManager:
