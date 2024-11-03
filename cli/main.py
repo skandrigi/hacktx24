@@ -64,15 +64,13 @@ class ScreenApp(App):
         yield self.comment
         yield self.popup
         with Horizontal(id="button-container"):
-            self.resolve_button = Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button", disabled=True)
-            self.accept_curr_button = Button("\U00002B24 Accept Current", id="acceptcurr-button", classes="action-button", disabled=True)
-            self.accept_both_button = Button("🍓 Accept Both", id="acceptboth-button", classes="action-button", disabled=True)
-            self.ai_button = Button("🤖 Accept AI", id="ai-button", classes="action-button", disabled=True)
+            self.resolve_button = Button("\U000015E3 Accept (I)ncoming", id="resolve-button", classes="action-button", disabled=True)
+            self.accept_curr_button = Button("\U00002B24 Accept (C)urrent", id="acceptcurr-button", classes="action-button", disabled=True)
+            self.accept_both_button = Button("🍓 Accept (B)oth", id="acceptboth-button", classes="action-button", disabled=True)
             
             yield self.resolve_button
             yield self.accept_curr_button
             yield self.accept_both_button
-            yield self.ai_button
 
 
     def on_mount(self) -> None:
@@ -140,7 +138,6 @@ class ScreenApp(App):
                 self.resolve_button.disabled = False
                 self.accept_curr_button.disabled = False
                 self.accept_both_button.disabled = False
-                self.ai_button.disabled = False
                 conflict_sections = self.conflict_detector.parse_conflict_sections(content)
                 
                 conflict_text = "\n".join(
