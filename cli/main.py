@@ -9,16 +9,15 @@ import aiofiles
 from inference import extract_answer, get_completion
 
 from textual.app import App, ComposeResult
-from textual.widgets import Static, DirectoryTree, Button
-from textual.containers import Horizontal, Vertical
-from rich.traceback import Traceback
-from rich.syntax import Syntax
+from textual.widgets import Static, DirectoryTree, Button, TextArea
+from textual.containers import Horizontal, Vertical, ScrollableContainer
 from rich.text import Text
 from backend.repository import RepositoryManager
 from backend.conflict import ConflictDetector
 from backend.commit import CommitComparer
 from backend.resolution import StagingManager
 
+INITIAL_TEXT = 'Print("Hello World!")'
 
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
@@ -34,20 +33,20 @@ class ScreenApp(App):
     def compose(self) -> ComposeResult:
         self.widget = Static("<<< MERGR 🍒", id="header-widget")
         self.files = DirectoryTree("./", id="file-browser", classes="grid")
-        self.code = Static("", id="code-view", classes="grid")
+        self.code = TextArea.code_editor(INITIAL_TEXT, language="python", read_only=True, id="code-view")
         self.comment = Static("", id="comment-view", classes="grid")
         self.command = Static("", id="command-view", classes="grid")
 
         yield self.widget
         yield self.files
-        yield self.code
+        yield ScrollableContainer((self.code))
         yield self.comment
 
-        with Horizontal(id="button-container"):
-            yield Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button")
-            yield Button("🍊 Accept Current", id="acceptcurr-button", classes="action-button")
-            yield Button("🍓 Accept Both", id="acceptboth-button", classes="action-button")
-            yield Button("🤖 Accept AI", id="ai-button", classes="action-button")
+        # with Horizontal(id="button-container"):
+        #     yield Button("\U000015E3 Accept Incoming", id="resolve-button", classes="action-button")
+        #     yield Button("🍊 Accept Current", id="acceptcurr-button", classes="action-button")
+        #     yield Button("🍓 Accept Both", id="acceptboth-button", classes="action-button")
+        #     yield Button("🤖 Accept AI", id="ai-button", classes="action-button")
 
     def on_mount(self) -> None:
         # Set up initial view titles and styles
@@ -94,9 +93,8 @@ class ScreenApp(App):
             content = file.read()
         
         # Update UI immediately with file content
-        code_view = self.query_one("#code-view", Static)
-        syntax = Syntax(content, "text", line_numbers=True, theme="github-dark")
-        code_view.update(syntax)
+        code_view = self.query_one("#code-view")
+        code_view.text = content
         comment_view = self.query_one("#comment-view", Static)
         # Run define_commits asynchronously to avoid blocking
         try:
@@ -114,8 +112,7 @@ class ScreenApp(App):
 
 
                 # Display raw file content with conflict markers in the code view
-                syntax = Syntax(content, "text", line_numbers=True, theme="github-dark")
-                code_view.update(syntax)
+                code_view.text = content
 
                 # Provide resolution instructions to the user
                 resolution_instruction = Text(
@@ -126,13 +123,12 @@ class ScreenApp(App):
 
             else:
                 # If no conflict markers are detected, display file content normally
-                syntax = Syntax(content, "text", line_numbers=True, theme="github-dark")
-                code_view.update(syntax)
+                code_view.text = content
                 comment_view.update("No conflicts detected in this file.")
 
         except Exception as e:
             # Handle errors in file loading
-            code_view.update(Traceback(theme="github-dark"))
+            code_view.text = "print('uh-oh')"
             comment_view.update(f"Error loading file: {e}")
 
     def resolve_conflict(self, file_path, choice="incoming"):
