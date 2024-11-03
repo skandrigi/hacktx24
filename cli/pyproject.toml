@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mergr = "src.main:main"
+mergr = "cli.main:main"
 
 [build-system]
 requires = ["setuptools"]
