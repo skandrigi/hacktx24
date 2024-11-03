@@ -45,21 +45,26 @@ class ConflictDetector:
         incoming_section = []
         in_conflict = False
         in_incoming = False
+        curr = 0
 
-        for line in file_lines:
+        for i,line in enumerate(file_lines.split('\n')):
+            print(line)
+
             if line.startswith("<<<<<<<"):
                 in_conflict = True
                 current_section = []
                 incoming_section = []
+                curr=i
             elif line.startswith("=======") and in_conflict:
                 in_incoming = True
             elif line.startswith(">>>>>>>") and in_conflict:
                 conflict_sections.append({
-                    "current": current_section,
-                    "incoming": incoming_section
+                    "current": (curr,current_section),
+                    "incoming": (i, incoming_section)
                 })
                 in_conflict = False
                 in_incoming = False
+                curr = 0
             elif in_conflict:
                 if in_incoming:
                     incoming_section.append(line)

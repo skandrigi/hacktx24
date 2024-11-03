@@ -22,8 +22,7 @@ INITIAL_TEXT = 'Print("Hello World!")'
 class ScreenApp(App):
     CSS_PATH = "boxes.tcss"
     comment_content = reactive("This is the initial content")
-    # merge_queue = reactive(deque(list(ConflictDetector.conflict_manager.parse_conflict_sections())))
-
+# 
     def __init__(self, openai_api_key=None):
         # Backend initialization
         super().__init__()
@@ -168,7 +167,8 @@ class ScreenApp(App):
 
         try:
             if "<<<<<<<" in content and "=======" in content and ">>>>>>>" in content:
-                conflict_sections = self.conflict_detector.parse_conflict_sections(content.splitlines())
+                conflict_sections = self.conflict_detector.parse_conflict_sections(content)
+                
                 conflict_text = "\n".join(
                     f"--- Conflict Section {i+1} ---\nCurrent changes:\n{''.join(section['current'])}\nIncoming changes:\n{''.join(section['incoming'])}"
                     for i, section in enumerate(conflict_sections)
