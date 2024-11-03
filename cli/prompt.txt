@@ -10,11 +10,11 @@ class User:
 What would each version do?
 
 A:
-HEAD version: This version initializes a User object with a name and sets last_login to None, indicating no login time is tracked initially.
+HEAD version: The current change initializes a User object with a name and sets last_login to None, indicating no login time is tracked initially.
 
-INCOMING version: This version initializes a User object with a name and immediately sets last_login to the current timestamp when the user is created.
+INCOMING version: The incoming change initializes a User object with a name and immediately sets last_login to the current timestamp when the user is created.
 
-BOTH versions: This would combine both versions, and the current time would override and become last_login.
+BOTH versions: Accepting both changes would combine both versions, and the current time would override and become last_login.
 
 ---
 
@@ -32,11 +32,11 @@ function processPayment(amount) {
 What would each version do?
 
 A:
-HEAD version: This version will log a message and process the payment through the API, with no transaction logging.
+HEAD version: The current change will log a message and process the payment through the API, with no transaction logging.
 
-INCOMING version: This version will log a message, record the transaction in the system logs, and then process the payment through the API.
+INCOMING version: The incoming change will log a message, record the transaction in the system logs, and then process the payment through the API.
 
-BOTH versions: These versions would result in duplicate console.log messages, followed by transaction logging and payment processing, which could cause confusion in the logs.
+BOTH versions: Accepting both changes would result in duplicate console.log messages, followed by transaction logging and payment processing, which could cause confusion in the logs.
 
 ---
 
@@ -53,11 +53,11 @@ BOTH versions: These versions would result in duplicate console.log messages, fo
 What would each version do?
 
 A:
-HEAD version: This version styles the button with a fixed blue background color (#007bff) and white text, making it non-customizable.
+HEAD version: The current change styles the button with a fixed blue background color (#007bff) and white text, making it non-customizable.
 
-INCOMING version: This version styles the button using CSS variables for both background and text colors, allowing for dynamic theme changes.
+INCOMING version: The incoming change styles the button using CSS variables for both background and text colors, allowing for dynamic theme changes.
 
-BOTH versions: These versions would cause a logical CSS error as they define the same properties twice, with the latter declarations overriding the former ones.
+BOTH versions: Accepting both changes would cause a logical CSS error as they define the same properties twice, with the latter declarations overriding the former ones.
 
 ---
 
@@ -75,8 +75,8 @@ BOTH versions: These versions would cause a logical CSS error as they define the
 What would each version do?
 
 A:
-HEAD version: This version displays a basic user profile with a square avatar image and the username.
+HEAD version: The current change displays a basic user profile with a square avatar image and the username.
 
-INCOMING version: This version displays an enhanced user profile with a circular avatar image, the username, and a badge showing the user's role.
+INCOMING version: The incoming displays an enhanced user profile with a circular avatar image, the username, and a badge showing the user's role.
 
-BOTH versions: These versions would create two of the same images and headings, which may not be expected structure by having duplicate img and h2 elements, likely a logic error.
+BOTH versions: Combing both changes would create two of the same images and headings, which may not be expected structure by having duplicate img and h2 elements, likely a logic error.
