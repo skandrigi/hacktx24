@@ -14,7 +14,6 @@ class ScreenApp(App):
         # Screen styles
         self.widget.styles.width = "100%"
         self.widget.styles.height = "auto"  # Adjust height to auto to fit content
-        self.widget.styles.background = "red"
         self.widget.styles.margin = 1
         self.widget.styles.text_align = "left"  # Ensure text is centered
 
@@ -27,6 +26,7 @@ class ScreenApp(App):
         self.files.styles.border_title_color = "white"
         self.files.styles.height= "90vh"
         self.files.styles.width= "20vw"
+        self.files.styles.margin = 1
 
 if __name__ == "__main__":
     app = ScreenApp()
